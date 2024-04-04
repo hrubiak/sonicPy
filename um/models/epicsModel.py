@@ -1,6 +1,9 @@
 
-from epics import caput, caget, PV
-from epics.utils import BYTES2STR
+try:
+    from epics import caput, caget, PV
+    from epics.utils import BYTES2STR
+except:
+    epics = None
 import numpy as np
 #from epics.clibs import *
 import copy
