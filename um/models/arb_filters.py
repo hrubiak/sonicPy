@@ -1,6 +1,7 @@
 import os.path, sys
 import numpy as np
-from scipy.signal import tukey, windows
+from scipy.signal import windows
+from scipy.signal.windows import tukey
 
 from um.models.tek_fileIO import *
 from utilities.utilities import *

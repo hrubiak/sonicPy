@@ -30,11 +30,11 @@ from .... import icons_path
 
 
 class PhaseWidget(QtWidgets.QWidget):
-    color_btn_clicked = QtCore.Signal(int, QtWidgets.QWidget)
-    show_cb_state_changed = QtCore.Signal(int, bool)
+    color_btn_clicked = QtCore.pyqtSignal(int, QtWidgets.QWidget)
+    show_cb_state_changed = QtCore.pyqtSignal(int, bool)
 
-    pressure_sb_value_changed = QtCore.Signal(int, float)
-    temperature_sb_value_changed = QtCore.Signal(int, float)
+    pressure_sb_value_changed = QtCore.pyqtSignal(int, float)
+    temperature_sb_value_changed = QtCore.pyqtSignal(int, float)
 
     def __init__(self):
         super(PhaseWidget, self).__init__()
@@ -98,9 +98,9 @@ class PhaseWidget(QtWidgets.QWidget):
         self.phase_tw.horizontalHeader().setStretchLastSection(False)
         self.phase_tw.setColumnWidth(0, 20)
         self.phase_tw.setColumnWidth(1, 25)
-        self.phase_tw.horizontalHeader().setResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        self.phase_tw.horizontalHeader().setResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        self.phase_tw.horizontalHeader().setResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        self.phase_tw.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        self.phase_tw.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        self.phase_tw.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
         self.phase_tw.setItemDelegate(NoRectDelegate())
         self._body_layout.addWidget(self.phase_tw, 10)
         self._body_layout.addWidget(self.parameter_widget, 0)
@@ -234,8 +234,8 @@ class PhaseWidget(QtWidgets.QWidget):
         self.select_phase(current_rows)
         self.phase_tw.blockSignals(False)
 
-        self.phase_tw.horizontalHeader().setResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        self.phase_tw.horizontalHeader().setResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        self.phase_tw.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        self.phase_tw.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
 
     def select_phase(self, ind):
         self.phase_tw.selectRow(ind)

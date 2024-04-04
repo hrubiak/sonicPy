@@ -19,7 +19,7 @@ from utilities.utilities import *
 from um.models.pvServer import pvServer
 from um.widgets.pvWidgets import pvQWidgets
 
-from scipy import nanmean
+from numpy import nanmean
 
 
 

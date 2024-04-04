@@ -46,7 +46,8 @@ class Scope_MSO54(Scope, pvModel):
         
         if not offline:
             self.connected = self.connect(self.visa_hostname)
-        
+        else:
+            self.DPO5000 = None
         
         
         self.data_stop = 10000
@@ -117,10 +118,11 @@ class Scope_MSO54(Scope, pvModel):
         data_stop = self.data_stop
         ch = self.selected_channel
         print('about to read')
-        waveform  = self.DPO5000.read_data_one_channel( data_start=1, 
+        if self.connected:
+            waveform  = self.DPO5000.read_data_one_channel( data_start=1, 
                                                         data_stop=data_stop,
                                                         x_axis_out=True)
-        print(len(waveform))
+            print(len(waveform))
 
     def connect(self, hostname):
         

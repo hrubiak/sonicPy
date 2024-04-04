@@ -167,7 +167,7 @@ class PopUpWidget(QtWidgets.QWidget):
         self.raise_()
 
 class plotWaveWindow(QtWidgets.QWidget):
-    widget_closed = QtCore.Signal()
+    widget_closed = QtCore.pyqtSignal()
     def __init__(self):
         super().__init__()
 
@@ -232,7 +232,7 @@ class plotWaveWindow(QtWidgets.QWidget):
 class EditWidget(PopUpWidget):
     applyClickedSignal = QtCore.pyqtSignal(str)
     controller_selection_edited_signal = QtCore.pyqtSignal(str)
-    widget_closed = QtCore.Signal()
+    widget_closed = QtCore.pyqtSignal()
     def __init__(self, title , selector_pv):
         super().__init__(title)
         self.plot_window = plotWaveWindow()

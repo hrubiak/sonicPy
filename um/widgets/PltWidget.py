@@ -292,8 +292,8 @@ class PltWidget(pg.PlotWidget):
     Subclass of PlotWidget
     """
     plotMouseMoveSignal = pyqtSignal(float)  
-    range_changed = QtCore.Signal(list)
-    auto_range_status_changed = QtCore.Signal(bool)
+    range_changed = QtCore.pyqtSignal(list)
+    auto_range_status_changed = QtCore.pyqtSignal(bool)
 
     def __init__(self, parent=None, colors = None):
         """

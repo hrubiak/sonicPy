@@ -56,7 +56,7 @@ class OutputWidget(QtWidgets.QWidget):
         tw.setHorizontalHeaderLabels(header_lbls)
         header_view.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         '''for col in range(len(header_lbls)-1):
-            header_view.setResizeMode(col , QtWidgets.QHeaderView.ResizeToContents)'''
+            header_view.setSectionResizeMode(col , QtWidgets.QHeaderView.ResizeToContents)'''
         header_view.setSectionResizeMode(len(header_lbls)-1, QtWidgets.QHeaderView.Stretch)
     
         tw.setItemDelegate(NoRectDelegate())

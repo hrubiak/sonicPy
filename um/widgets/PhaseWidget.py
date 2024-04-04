@@ -40,10 +40,10 @@ class PhaseWidget(QtWidgets.QWidget):
     show_cb_state_changed = QtCore.pyqtSignal(int, bool)
     file_dragged_in = QtCore.pyqtSignal(list)
 
-    vp_sb_value_changed = QtCore.Signal(int, float)
-    vs_sb_value_changed = QtCore.Signal(int, float)
-    d_sb_value_changed = QtCore.Signal(int, float)
-    t_0_sb_value_changed = QtCore.Signal(int, float)
+    vp_sb_value_changed = QtCore.pyqtSignal(int, float)
+    vs_sb_value_changed = QtCore.pyqtSignal(int, float)
+    d_sb_value_changed = QtCore.pyqtSignal(int, float)
+    t_0_sb_value_changed = QtCore.pyqtSignal(int, float)
 
     def __init__(self):
         super(PhaseWidget, self).__init__()
@@ -152,10 +152,10 @@ class PhaseWidget(QtWidgets.QWidget):
         header_view = QtWidgets.QHeaderView(QtCore.Qt.Horizontal, self.phase_tw)
         self.phase_tw.setHorizontalHeader(header_view)
         
-        #header_view.setResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        header_view.setResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header_view.setResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        header_view.setResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        #header_view.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header_view.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
+        header_view.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        header_view.setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
         header_view.hide()
         self.phase_tw.setItemDelegate(NoRectDelegate())
 

@@ -38,13 +38,13 @@ class PhaseLoadError(Exception):
 
 
 class PhaseModel(QtCore.QObject):
-    phase_added = QtCore.Signal()
-    phase_removed = QtCore.Signal(int)  # phase ind
-    phase_changed = QtCore.Signal(int)  # phase ind
-    phase_reloaded = QtCore.Signal(int)  # phase ind
+    phase_added = QtCore.pyqtSignal()
+    phase_removed = QtCore.pyqtSignal(int)  # phase ind
+    phase_changed = QtCore.pyqtSignal(int)  # phase ind
+    phase_reloaded = QtCore.pyqtSignal(int)  # phase ind
 
-    reflection_added = QtCore.Signal(int)
-    reflection_deleted = QtCore.Signal(int, int)  # phase index, reflection index
+    reflection_added = QtCore.pyqtSignal(int)
+    reflection_deleted = QtCore.pyqtSignal(int, int)  # phase index, reflection index
 
     num_phases = 0
 
