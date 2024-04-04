@@ -3,7 +3,7 @@ from enum import auto
 import os.path, sys
 import wave
 import numpy as np
-from sqlalchemy import false, true
+
 from um.models.ScopeModel import Scope
 from um.models.tek_fileIO import *
 from utilities.utilities import *

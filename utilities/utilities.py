@@ -2,8 +2,8 @@
 import numpy as np
 from scipy import signal
 from numpy import nanmean
-from scipy.signal.windows import blackman#, nanmean
-from scipy.signal import hilbert, tukey
+from scipy.signal.windows import blackman, tukey #, nanmean
+from scipy.signal import hilbert
 from scipy.fftpack import fft
 
 import json

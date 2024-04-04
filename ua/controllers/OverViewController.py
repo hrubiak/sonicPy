@@ -13,8 +13,7 @@ import copy
 from pathlib import Path
 from numpy import arange
 from numpy.core.einsumfunc import _parse_possible_contraction
-#from sqlalchemy import false
-#from pyrsistent import T
+
 from utilities.utilities import *
 from ua.widgets.UltrasoundAnalysisWidget import UltrasoundAnalysisWidget
 from ua.widgets.OverviewWidget import OverViewWidget, FolderListWidget
