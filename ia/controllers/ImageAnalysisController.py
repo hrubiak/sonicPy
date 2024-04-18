@@ -66,7 +66,7 @@ class ImageAnalysisController(QObject):
         
 
         self.display_window.crop_btn.clicked.connect(self.autocrop_btn_callback)
-        self.display_window.rot90_btn.clicked.connect(self.rot90_btn_callback)
+        self.display_window.rot_angle_edit.editingFinished.connect(self.rot_angle_callback)
       
         self.display_window.edge_roi_1.sigRegionChangeFinished.connect(self.roi_changed_callback)
         self.display_window.edge_roi_2.sigRegionChangeFinished.connect(self.roi_changed_callback) 
@@ -295,10 +295,11 @@ class ImageAnalysisController(QObject):
             self.model.filter_image()
             self.update_frame()
 
-    def rot90_btn_callback(self, btn):
+    def rot_angle_callback(self):
+
         filename = self.model.filename
-        rot90 = self.display_window.rot90_btn.isChecked()
-        self.model.settings['rot90']= rot90
+        rot_angle= self.display_window.rot_angle_edit.value()
+        self.model.settings['rotation_angle']= rot_angle
         if filename != '':
             self.model.load_file(filename)
             self.display_window.fname_lbl.setText(os.path.split( filename)[-1])

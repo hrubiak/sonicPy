@@ -4,6 +4,7 @@ from utilities.utilities import *
 import numpy as np
 
 from scipy.signal import medfilt2d
+from scipy.ndimage import rotate
 
 from um.models.tek_fileIO import *
 
@@ -117,7 +118,7 @@ class ImageAnalysisModel():
                          'edges_roi':  [],
                          'edge_polynomial_order':[2,2],
                          'edge_fit_threshold':[0.3,0.3],
-                         'rot90':False} 
+                         'rotation_angle':0} 
 
     def add_ROI(self, selected,pos, size):
 
@@ -165,8 +166,10 @@ class ImageAnalysisModel():
     def load_file(self, fname, autocrop=False):
         self.filename = fname
         src = np.flip(np.asarray(cv2.imread(fname,0),dtype=float),axis=0)
-        if self.settings['rot90']:
-            src = np.rot90(src)
+        if 'rotation_angle' in self.settings:
+            angle = self.settings['rotation_angle']
+            src = rotate(src, angle, reshape=False)
+
         self.src = src
         
 
