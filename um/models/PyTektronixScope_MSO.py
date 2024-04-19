@@ -475,7 +475,16 @@ class TektronixScope(object):
         # detect if the setting of the scope are change
         # To be safe, booster is set to False by default.  
         booster = self.booster
-
+        if booster:  
+            if not hasattr(self, 'first_read'): 
+                booster=False
+                self.booster = False
+            else: 
+                if self.first_read: 
+                    booster=False
+                    self.booster = False
+        self.first_read=False
+        
         scope = self._inst
        
         
@@ -507,6 +516,7 @@ class TektronixScope(object):
         # Data is sent back with ieee defined header.  ie. #41000<binary data bytes>\n
         # PyVISA read_binary_values() method will automatically read and parse the ieee block header so you don't have to.
         rawData = self._inst.read_binary_values(datatype='b', is_big_endian=False, container=np.ndarray, header_fmt='ieee', expect_termination=True)
+        self.num_acq = self.ask('ACQuire:NUMACq?')
         dataLen = len(rawData)
 
         # Create numpy arrays of floating point values for the X and Y axis
@@ -517,7 +527,7 @@ class TektronixScope(object):
             xvalues[i] = t0 + xinc * i # Create timestamp for the data point
             yvalues[i] = float(rawData[i] - yoff) * ymult + yzero # Convert raw ADC value into a floating point value
 
-
+        
         if x_axis_out:
             return xvalues, yvalues
         else:

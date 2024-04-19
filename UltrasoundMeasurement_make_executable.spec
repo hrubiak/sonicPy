@@ -29,28 +29,28 @@ extra_binaries=[]
 
 if _platform == "linux" or _platform == "linux2":
     platform = "Linux"
-    name = "TimeOfFlight"
+    name = "SonicPy"
 elif _platform == "win32" or _platform == "cygwin":
     platform = "Win"
-    name = "TimeOfFlight.exe"
+    name = "SonicPy.exe"
     sys.path.append("C:\\Users\\hrubiak\\Documents\\GitHub\\sonicPy")
     extra_datas = [
-        ("ua\\resources", "ua\\resources"),
         ("um\\resources", "um\\resources"),
+       
         ("dask", "dask")
     ]
  
 elif _platform == "darwin":
     platform = "Mac"
     extra_binaries=[ ]
-    name = "run_TimeOfFlight"
+    name = "run_SonicPy"
     sys.path.append("/Users/ross/GitHub/sonicPy")
     extra_datas = [
-        ("ua/resources", "ua/resources"),
+        ("um/resources", "um/resources"),
         ("dask", "dask")
     ]
 
-import ua
+import um
 
 # checking whether the platform is 64 or 32 bit
 if sys.maxsize > 2 ** 32:
@@ -64,12 +64,12 @@ excl = ['matplotlib', 'PySide','PyQt4','pyeqt']
 
 print('start Analysis')
 
-a = Analysis(['TimeOfFlightAnalysis.py'],
+a = Analysis(['UltrasoundMeasurement.py'],
              pathex=[scipy_libs],
              binaries=extra_binaries,
              datas=extra_datas,
              hiddenimports=[
-                            "ua"
+                            "um"
                             ],
              hookspath=[],
              runtime_hooks=[],
@@ -79,7 +79,7 @@ a = Analysis(['TimeOfFlightAnalysis.py'],
              cipher=block_cipher,
              noarchive=False)
 
-# remove packages which are not needed by TimeOfFlightAnalysis
+# remove packages which are not needed by SonicPy
 a.binaries = [x for x in a.binaries if not x[0].startswith("matplotlib")]
 a.binaries = [x for x in a.binaries if not x[0].startswith("zmq")]
 a.binaries = [x for x in a.binaries if not x[0].startswith("IPython")]
@@ -123,7 +123,7 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
 
-from ua import __version__
+from um import __version__
 print('version ' + __version__)
 
 exe = EXE(pyz,
@@ -143,13 +143,13 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='TimeOfFlight_{}_{}'.format(platform, __version__))
+               name='SonicPy_{}_{}'.format(platform, __version__))
 
 
 if _platform == "darwin":
     app = BUNDLE(coll,
-                 name='TimeOfFlight_{}.app'.format(__version__),
-                 #icon='ua/resources/icons/icon.icns',
+                 name='SonicPy_{}.app'.format(__version__),
+                 #icon='um/resources/icons/icon.icns',
                  bundle_identifier=None,
                  info_plist={
                     'NSPrincipalClass': 'NSApplication',

@@ -72,7 +72,7 @@ a = Analysis(['ImageAnalysis.py'],
              cipher=block_cipher,
              noarchive=False)
 
-# remove packages which are not needed by Dioptas
+# remove packages which are not needed by ImageAnalysis
 a.binaries = [x for x in a.binaries if not x[0].startswith("matplotlib")]
 a.binaries = [x for x in a.binaries if not x[0].startswith("zmq")]
 a.binaries = [x for x in a.binaries if not x[0].startswith("IPython")]
