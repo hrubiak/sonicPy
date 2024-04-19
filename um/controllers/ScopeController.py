@@ -24,7 +24,7 @@ class ScopeController(pvController):
     #runStateSignal = pyqtSignal(bool)
 
     def __init__(self, parent, isMain = False, offline = False, scope='DPO'):
-        visa_hostname = '54'
+        visa_hostname = '169'
         if scope == 'DPO':
             from um.models.DPO5104 import Scope_DPO5104
             model = Scope_DPO5104(parent, visa_hostname=visa_hostname, offline = offline)
