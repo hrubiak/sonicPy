@@ -278,6 +278,14 @@ class UltrasoundController(QObject):
         print(state)
         
         pass'''
+    
+    def relative_path(self, relative_path):
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
 
     def setStyle(self, Style):
         #print('style:  ' + str(Style))
@@ -285,6 +293,13 @@ class UltrasoundController(QObject):
             WStyle = 'plastique'
             file = open(os.path.join(self.style_path, "stylesheet.qss"))
             stylesheet = file.read()
+
+            down_arrow_url = self.relative_path("um/resources/style/angle-down.png").replace("\\", "/")
+            up_arrow_url = self.relative_path("um/resources/style/angle-up.png").replace("\\", "/")
+
+            stylesheet = stylesheet.replace("down_arrow_url", down_arrow_url)
+            stylesheet = stylesheet.replace("up_arrow_url", up_arrow_url)
+
             self.app.setStyleSheet(stylesheet)
             file.close()
             self.app.setStyle(WStyle)

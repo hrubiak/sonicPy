@@ -539,7 +539,7 @@ class TektronixScope(object):
 
 # unit test:
 # should print the device ID and number of point in returned waveform (100000)
-
+'''
 def main():
     hostname = '54'
     rm = visa.ResourceManager()
@@ -563,4 +563,4 @@ def main():
         print(count_y)
 
 if __name__ == '__main__':
-    main()
+    main()'''

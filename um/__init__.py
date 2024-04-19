@@ -6,6 +6,7 @@ import os
 
 
 resources_path = os.path.join(os.path.dirname(__file__), 'resources')
+print(resources_path)
 calibrants_path = os.path.join(resources_path, 'calibrants')
 icons_path = os.path.join(resources_path, 'icons')
 data_path = os.path.join(resources_path, 'data')

@@ -22,6 +22,7 @@ import copy
 
 from utilities.HelperModule import get_partial_index, get_partial_value
 
+from .. import  resources_path
 
 class Scope_DPO5104(Scope, pvModel):
     waveform_updated_signal = pyqtSignal(dict)
@@ -30,8 +31,8 @@ class Scope_DPO5104(Scope, pvModel):
 
     def __init__(self, parent, visa_hostname='143', offline = False):
         
-        
-        self.virtual_data = read_tek_csv('anvil.csv')
+        dummy_data_path = os.path.join(resources_path,'anvil.csv')
+        self.virtual_data = read_tek_csv(dummy_data_path)
 
         pvModel.__init__(self, parent)
         Scope.__init__(self)
