@@ -9,7 +9,7 @@ from functools import partial
 import json
 from um.models.pvServer import pvServer
 
-from .. import offline
+#from .. import offline
 
 '''if not offline:
     from epics import PV as epics_PV'''
@@ -96,7 +96,7 @@ class PV(QObject):
                 self._epics_PV_in_monitor=None'''
 
 
-    def handle_epics_pv_callback(self, Status):
+    '''def handle_epics_pv_callback(self, Status):
         if not offline:
             if type(Status) == str:
                 if Status == '0' or Status == 'Done':
@@ -107,7 +107,7 @@ class PV(QObject):
                     
                 g = self.__getattribute__('set')
                 if Status:
-                    g(Status)
+                    g(Status)'''
 
         
 
