@@ -45,16 +45,16 @@ class FileServer():
     
     def get_waveforms(self, files):
         output = []
-        read_files = []
+        to_read_files = []
         for f in files:
             if f in self.files:
                 pass
                 #waveforms.append(self.files[f])
             else:
-                read_files.append(f)
+                to_read_files.append(f)
     
-        if len(read_files):
-            read_files = read_2D_spectra_dict(read_files)
+        if len(to_read_files):
+            read_files = read_2D_spectra_dict(to_read_files)
             for rf in read_files:
                 fname = rf['filename']
                 waveform = rf['waveform']

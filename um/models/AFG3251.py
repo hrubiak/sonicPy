@@ -23,6 +23,7 @@ from um.models.tek_fileIO import read_file_TEKAFG3000, waveform_to_AFG3251_binar
 import json
 from um.models.pv_model import pvModel
 
+
 class AFG_AFG3251(Afg, pvModel):
 
     model_value_changed_signal = pyqtSignal(dict)
@@ -290,34 +291,32 @@ class AFG_AFG3251(Afg, pvModel):
             
     
     def connect(self, hostname):
-        try:
-            self.disconnect()
-            rm = visa.ResourceManager()
-            resources = rm.list_resources()
-            r = None
-            for r in resources:
-                if hostname in r:
-                    break
-            if r is not None:
-                # pyvisa code:
-                AFG3000 = rm.open_resource(r)
-                AFG3000.clear()
-                ID = AFG3000.query('*IDN?')
-                if ID is not None:
-                    if len(ID):
-                        tokens = ID.split(',')
-                        ID = tokens[1]
-                #print(ID)
-                self.instrument = ID
-                #AFG3000.write('*RST') #reset AFG
-                self.AFG3000 = AFG3000
-                return True
-            else:
-                return False
-        except:
-            self.AFG3000 = None
+        self.AFG3000 = None
+        self.disconnect()
+        rm = visa.ResourceManager()
+        resources = rm.list_resources()
+        res = None
+        for r in resources:
+            if hostname in r:
+                res = r
+                break
+        if res is not None:
+            # pyvisa code:
+            AFG3000 = rm.open_resource(r)
+            AFG3000.clear()
+            ID = AFG3000.query('*IDN?')
+            if ID is not None:
+                if len(ID):
+                    tokens = ID.split(',')
+                    ID = tokens[1]
+            #print(ID)
+            self.instrument = ID
+            #AFG3000.write('*RST') #reset AFG
+            self.AFG3000 = AFG3000
+            return True
+        else:
             return False
-
+      
     
 
     def disconnect(self):

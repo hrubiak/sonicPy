@@ -48,10 +48,10 @@ def read_2D_spectra_dict(filenames, subsample = 1 ):
 
     fformat, fformat_name = get_file_format(filenames[0])
     #print(filenames[0])
-    if fformat == 1:
+    if fformat == 1 :
         r = read_tek_csv_files_2d(filenames, subsample=subsample)
        
-    elif fformat == 2:
+    elif fformat == 2 :
         r = read_ascii_scope_files_2d(filenames, subsample = subsample)
     
     elif fformat == 4:
@@ -59,6 +59,9 @@ def read_2D_spectra_dict(filenames, subsample = 1 ):
         
     elif fformat == 5:
         r = read_tek_csv_files_2d(filenames,subsample=1, header_columns=2,skip_rows=1,column_shift=0)
+
+    elif fformat == 6:
+        r = read_ascii_scope_files_2d(filenames, subsample = 1, separator=',', nchans = 200000)    
     
     '''file  = os.path.split(filenames[0])[-1]
     if '.' in file:
@@ -102,15 +105,23 @@ def load_any_waveform_file(filename):
         print(fformat)
         return t,spectrum
 
+def is_numeric(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 def get_file_format( fname):
     '''
     used for determining the file format for the oscilloscope waveform data
     Supported types:
     1. HPCAT tek scope (column 0-3: header, column 4-5: 2-column data)
-    2. LANL 2-column, no header
+    2. LANL 2-column, no heade
     3. Stonybrook scope (same as 1), returns as 1
     4. Stonybrook wavestar (2-column, one line header)
     5. GSECARS (2-column with full header)
+    6. PETRA III 2-column, no header, comma separated
 
     returns: tuple with file format number 1-n, or -1 if not recognised, and the file format name
     '''
@@ -125,9 +136,10 @@ def get_file_format( fname):
                         (1, 'hpcat'),
                         (2, 'lanl'),
                         (4, 'stonybrook'),
-                        (5, 'gsecars')
+                        (5, 'gsecars'),
+                        (6, 'petra3')
                         ]
-            fformat = 0
+            fformat = -1
 
             if '\t' in file_line:
                 # tab separated
@@ -151,28 +163,32 @@ def get_file_format( fname):
                     if tokens[0].strip() == 's' and tokens[1].strip() == 'Volts':
                         # stonybrook wavestar format
                         fformat =  3
-                    
-                    # Check if there is a multiline 2-column header (GSECARS)
-                    header = {}
-                    a = True
-                    if len(tokens[0]):
-                            header[tokens[0].strip('"').strip()]=(tokens[1].strip())
-                    else:
-                        a = False
-                    row = 1
+                    if is_numeric(tokens[0].strip()) and is_numeric(tokens[1].strip()):
+                        fformat = 5
 
-                    while a:
-                        file_line = file_text.readline()
-                        tokens = file_line.split(separator)
-                        if len(tokens[0])>1:
-                            header[tokens[0].strip('"').strip()]=(tokens[1].strip())
+                    else:
+
+                        # Check if there is a multiline 2-column header (GSECARS)
+                        header = {}
+                        a = True
+                        if len(tokens[0]):
+                                header[tokens[0].strip('"').strip()]=(tokens[1].strip())
                         else:
                             a = False
-                        row +=1
-                    
-                    if "Model" in header:
-                        # gsecars format
-                        fformat =  4
+                        row = 1
+
+                        while a:
+                            file_line = file_text.readline()
+                            tokens = file_line.split(separator)
+                            if len(tokens[0])>1:
+                                header[tokens[0].strip('"').strip()]=(tokens[1].strip())
+                            else:
+                                a = False
+                            row +=1
+                        
+                        if "Model" in header:
+                            # gsecars format
+                            fformat =  4
 
             file_text.close()
 

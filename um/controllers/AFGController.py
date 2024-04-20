@@ -7,9 +7,9 @@ from um.controllers.pv_controller import pvController
 
 class AFGController(pvController):
     
-    def __init__(self, parent, arb_controller, arb_filter_controller,  isMain = False, offline = False):
+    def __init__(self, parent, arb_controller, arb_filter_controller,  isMain = False, offline = False, visa_hostname = '202'):
 
-        visa_hostname='202'
+      
         model = AFG_AFG3251(parent, visa_hostname=visa_hostname, offline = offline)
         super().__init__(parent, model, isMain)  
 

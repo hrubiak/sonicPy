@@ -84,9 +84,9 @@ def polyfitw(x, y, w, ndegree, return_fit=0):
     """
     n = min(len(x), len(y)) # size = smaller of x,y
     m = ndegree + 1         # number of elements in coeff vector
-    a = Numeric.zeros((m,m),Numeric.float)  # least square matrix, weighted matrix
-    b = Numeric.zeros(m,Numeric.float)    # will contain sum w*y*x^j
-    z = Numeric.ones(n,Numeric.float)     # basis vector for constant term
+    a = Numeric.zeros((m,m),float)  # least square matrix, weighted matrix
+    b = Numeric.zeros(m,float)    # will contain sum w*y*x^j
+    z = Numeric.ones(n,float)     # basis vector for constant term
 
     a[0,0] = Numeric.sum(w)
     b[0] = Numeric.sum(w*y)
@@ -108,7 +108,7 @@ def polyfitw(x, y, w, ndegree, return_fit=0):
     x_yfit = Numeric.asarray(range(int(minx*4),int(maxx*4)+1))/4
     n_yfit = len(x_yfit)
     # compute optional output parameters.
-    yfit = Numeric.zeros(n_yfit,Numeric.float)+c[0]   # one-sigma error estimates, init
+    yfit = Numeric.zeros(n_yfit,float)+c[0]   # one-sigma error estimates, init
     
     for k in range(1, ndegree +1):
         yfit = yfit + c[k]*(x_yfit**k)  # sum basis vectors
@@ -117,8 +117,8 @@ def polyfitw(x, y, w, ndegree, return_fit=0):
         return [c, yfit, x_yfit]    
     var = Numeric.sum((yfit-y)**2 )/(n-m)  # variance estimate, unbiased
     sigma = Numeric.sqrt(var)
-    yband = Numeric.zeros(n,Numeric.float) + a[0,0]
-    z = Numeric.ones(n,Numeric.float)
+    yband = Numeric.zeros(n,float) + a[0,0]
+    z = Numeric.ones(n,float)
     for p in range(1,2*ndegree+1):     # compute correlated error estimates on y
         z = z*x		# z is now x^p
         sum = 0.
@@ -160,9 +160,9 @@ def fit_gaussian(chans, counts, return_fit=0):
         negative.  Any values less than 1 are replaced by 1.
     """
     center = (chans[0] + chans[-1])/2.
-    x = Numeric.asarray(chans, Numeric.float)-center
+    x = Numeric.asarray(chans, float)-center
     y = Numeric.log(Numeric.clip(counts, 1, max(counts)))
-    w = Numeric.asarray(counts, Numeric.float)**2
+    w = Numeric.asarray(counts, float)**2
     w = Numeric.clip(w, 1., max(w))
     if return_fit==0:
 
@@ -225,7 +225,7 @@ def expand_array(array, expand, sample=0):
     if (expand == 1): return array
     if (sample == 1): return Numeric.repeat(array, expand)
 
-    kernel = Numeric.ones(expand, Numeric.float)/expand
+    kernel = Numeric.ones(expand, float)/expand
     # The following mimic the behavior of IDL's rebin when expanding
     temp = Numeric.convolve(Numeric.repeat(array, expand), kernel, mode=2)
     # Discard the first "expand-1" entries

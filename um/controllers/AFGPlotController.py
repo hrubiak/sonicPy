@@ -26,12 +26,14 @@ class AFGPlotController(QObject):
     staticCursorMovedSignal = pyqtSignal(str) 
     dataPlotUpdated = pyqtSignal()
 
-    def __init__(self, afg_controller, afg_waveform_widget,  isMain = False):
+    def __init__(self, afg_controller, afg_waveform_widget,  isMain = False, offline = False):
         super().__init__()
         self.pv_server = pvServer()
         self.widget = afg_waveform_widget
         self.afg_controller = afg_controller
-        self.waveform = self.pv_server.get_pv('AFG3251:user1_waveform')
+        connected = self.afg_controller.model.connected
+        if connected:
+            self.waveform = self.pv_server.get_pv('AFG3251:user1_waveform')
 
         self.pg = self.widget.plot_widget.fig.win
         if isMain:

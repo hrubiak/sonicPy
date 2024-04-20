@@ -488,21 +488,23 @@ class TektronixScope(object):
         scope = self._inst
        
         
-        
-        scope.write("HEADER 0")
-        scope.write("DATA:SOUR CH1")
-        scope.write("DAT:ENC SRI")   # Signed Binary Format, LSB order
-        scope.write("DAT:WIDTH 1")
+        if not booster:
+            scope.write("HEADER 0")
+            scope.write("DATA:SOUR CH1")
+            scope.write("DAT:ENC SRI")   # Signed Binary Format, LSB order
+            scope.write("DAT:WIDTH 1")
 
-        scope.write("DAT:START 1")
-        scope.write("DAT:STOP 1e10") # Set data stop to max
-        recordLength = int(scope.query("WFMO:NR_P?"))  # Query how many points are actually available
-        scope.write("DAT:STOP {0}".format(recordLength)) # Set data stop to match points available
+            scope.write("DAT:START 1")
+            scope.write("DAT:STOP 1e10") # Set data stop to max
+            recordLength = int(scope.query("WFMO:NR_P?"))  # Query how many points are actually available
+            print('recordLength '+ str(recordLength))
+            scope.write("DAT:STOP {0}".format(recordLength)) # Set data stop to match points available
 
         # Fetch horizontal scaling factors
-        xinc = float(scope.query("WFMO:XINCR?"))
-        xzero = float(scope.query("WFMO:XZERO?"))
-        pt_off = int(scope.query("WFMO:PT_OFF?"))
+        if not booster:
+            xinc = float(scope.query("WFMO:XINCR?"))
+            xzero = float(scope.query("WFMO:XZERO?"))
+            pt_off = int(scope.query("WFMO:PT_OFF?"))
 
         # Fetch vertical scaling factors
         ymult = float(scope.query("WFMO:YMULT?"))
@@ -519,17 +521,21 @@ class TektronixScope(object):
         self.num_acq = self.ask('ACQuire:NUMACq?')
         dataLen = len(rawData)
 
-        # Create numpy arrays of floating point values for the X and Y axis
-        t0 = (-pt_off * xinc) + xzero
-        xvalues = np.ndarray(dataLen, float)
+        if not booster:
+            # Create numpy arrays of floating point values for the X and Y axis
+            t0 = (-pt_off * xinc) + xzero
+            xvalues = np.ndarray(dataLen, float)
         yvalues = np.ndarray(dataLen, float)
         for i in range(0,dataLen):
-            xvalues[i] = t0 + xinc * i # Create timestamp for the data point
+            if not booster:
+                xvalues[i] = t0 + xinc * i # Create timestamp for the data point
             yvalues[i] = float(rawData[i] - yoff) * ymult + yzero # Convert raw ADC value into a floating point value
-
+        if not booster:
+            self.X = xvalues
+            self.booster = True
         
         if x_axis_out:
-            return xvalues, yvalues
+            return self.X, yvalues
         else:
             return yvalues
 

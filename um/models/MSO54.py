@@ -373,10 +373,10 @@ class Scope_MSO54(Scope, pvModel):
             #print('autoscaled')
 
     def _get_waveform(self, wait=True): 
-        print('_get_waveform')
+        #print('_get_waveform')
 
         if self.connected:
-            print('connected')
+            #print('connected')
             start = time.time()
             wait_till = start+0.1
             num_av = self.pvs['num_av']._val
@@ -387,11 +387,11 @@ class Scope_MSO54(Scope, pvModel):
                 
                 data_stop = self.data_stop
                 ch = self.selected_channel
-                print('about to read')
+                #print('about to read')
                 waveform  = self.scope_object.read_data_one_channel( data_start=1, 
                                                                 data_stop=data_stop,
                                                                 x_axis_out=True)
-                print('finished reading')
+                #print('finished reading')
                 #end = time.time()
                 # make sure set frame rate isn't exceeded
                 if wait:
@@ -399,7 +399,7 @@ class Scope_MSO54(Scope, pvModel):
                         time.sleep(0.005)
                 num_acq = int(self.scope_object.num_acq)
                 #elapsed = end - start
-                (dt, micro) = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f').split('.')
+                (dt, micro) = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f').split('.')
                 dt = "%s.%03d" % (dt, int(micro) / 1000)
 
                 waveform_out = {'waveform':waveform,'ch':ch, 'time':dt, 'num_acq':num_acq}

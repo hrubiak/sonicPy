@@ -6,6 +6,6 @@
 
 from um import main
 
-main(scope='MSO')
+main()
  
 
