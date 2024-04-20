@@ -263,7 +263,7 @@ class CustomViewBox(pg.ViewBox):
             
         elif ev.button() == QtCore.Qt.LeftButton: 
             pos = ev.pos()  ## using signal proxy turns original arguments into a tuple
-            mousePoint = self.mapToView(pos)
+            mousePoint = self.mapSceneToView(pos)
             x = mousePoint.x()
             y = mousePoint.y()
             self.cursorPoint=x
