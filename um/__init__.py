@@ -24,8 +24,6 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 import pyqtgraph as pg
 
-offline = False
-
 
 scope_settings_file = os.path.normpath(os.path.join(devices_path,'scope.txt'))
 if os.path.exists(scope_settings_file):
