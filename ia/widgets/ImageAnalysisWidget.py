@@ -86,8 +86,10 @@ class ImageAnalysisWidget(QMainWindow):
         self.crop_btn.setCheckable(True)
         self.crop_btn.setChecked(True)
         self.rot_angle_edit = DoubleSpinBoxAlignRight()
+        self.rot_angle_edit.setMinimum(-180)
+        self.rot_angle_edit.setMaximum(180)
         self.rot_angle_edit.setValue(0)
-        self.rot_angle_edit.setDecimals(2)
+        self.rot_angle_edit.setDecimals(1)
 
         
         self.compute_btn = QtWidgets.QPushButton("Compute")
