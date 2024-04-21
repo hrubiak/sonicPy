@@ -115,11 +115,13 @@ class MultipleFrequencyController(QObject):
                 QtWidgets.QApplication.processEvents()
                 fname = files[f]
                 data = self.overview_controller.get_data_by_filename(fname)
-                self.correlation_controller. update_data_by_dict_silent(data)
-                bounds = self.correlation_controller.get_lr_bounds()
-                freq = f * 1e6
-                self.correlation_controller.calculate_data_silent(freq,bounds)
-                self.correlation_controller.save_result(signaling = False)
+                
+                if len(data):
+                    self.correlation_controller. update_data_by_dict_silent(data)
+                    bounds = self.correlation_controller.get_lr_bounds()
+                    freq = f * 1e6
+                    self.correlation_controller.calculate_data_silent(freq,bounds)
+                    self.correlation_controller.save_result(signaling = False)
 
                 if progress_dialog.wasCanceled():
                     break
@@ -169,6 +171,18 @@ class MultipleFrequencyController(QObject):
                     break
             QtWidgets.QApplication.processEvents()
 
+    def freq_str_ind_to_val(self, str_ind):
+        tokens = str_ind.split(',')
+        if len(tokens) >1:
+            val_freq = int(tokens[1].strip())
+        else:
+            f_start = self.overview_controller.widget.freq_start.value()
+            f_step = self.overview_controller.widget.freq_step.value()
+
+
+            val_freq = f_start + int(str_ind) * f_step
+        return val_freq * 1e6
+
     def file_selected(self, data):
 
         fname = data['fname']
@@ -191,8 +205,11 @@ class MultipleFrequencyController(QObject):
             files = {}
             for freq_ind in freqs:
                 file = freqs[freq_ind]
-                freq_ind_int = int(freq_ind)
-                freq_val = f_start + freq_ind_int * f_step
+
+                '''freq_ind_int = int(freq_ind)
+                freq_val = f_start + freq_ind_int * f_step'''
+                freq_val=self.freq_str_ind_to_val(freq_ind)*1e-6
+
                 files[freq_val] = file
 
             self.model.set_files(files)
@@ -267,8 +284,9 @@ class MultipleFrequencyController(QObject):
         f_start = self.overview_controller.widget.freq_start.value()
         f_step = self.overview_controller.widget.freq_step.value()
         
-        f_freq_ind = int(fbase)
-        freq = f_start + f_freq_ind * f_step
+        '''f_freq_ind = int(fbase)
+        freq = f_start + f_freq_ind * f_step'''
+        freq=self.freq_str_ind_to_val(fbase)*1e-6
 
         self.correlation_controller.update_data_by_dict(data)
         
@@ -298,11 +316,13 @@ class MultipleFrequencyController(QObject):
         elif self.correlation_controller.display_window.s_wave_btn.isChecked():
             echo_type = "S"
 
-        f_start = self.overview_controller.widget.freq_start.value()
+        '''f_start = self.overview_controller.widget.freq_start.value()
         f_step = self.overview_controller.widget.freq_step.value()
         
-        f_freq_ind = int(fbase)
-        freq = f_start + f_freq_ind * f_step    
+
+        freq = int(self.freq_str_ind_to_val(fbase)*1e-6)'''
+        '''f_freq_ind = int(fbase)
+        freq = f_start + f_freq_ind * f_step    '''
 
         #echoes_by_condition = self.echoes_results_model.get_echoes_by_condition(cond, echo_type)
         self.arrow_plot_controller.set_wave_type(echo_type)

@@ -58,7 +58,7 @@ def read_2D_spectra_dict(filenames, subsample = 1 ):
         r = read_ascii_scope_files_2d(filenames,subsample=1, separator=',', skip_rows=1, nchans = 200000)
         
     elif fformat == 5:
-        r = read_tek_csv_files_2d(filenames,subsample=1, header_columns=2,skip_rows=1,column_shift=0)
+        r = read_tek_csv_files_2d(filenames,subsample=1, header_columns=2,skip_rows=0,column_shift=0)
 
     elif fformat == 6:
         r = read_ascii_scope_files_2d(filenames, subsample = 1, separator=',', nchans = 200000)    
@@ -125,21 +125,23 @@ def get_file_format( fname):
 
     returns: tuple with file format number 1-n, or -1 if not recognised, and the file format name
     '''
-
-    if len(fname):
-        if os.path.isfile(fname):
-            file_text = open(fname, "r")
-            
-            file_line = file_text.readline()
-            separator = None
-            formats = [ (-1, ''),
+    formats = [ (-1, ''),
                         (1, 'hpcat'),
                         (2, 'lanl'),
                         (4, 'stonybrook'),
                         (5, 'gsecars'),
                         (6, 'petra3')
                         ]
-            fformat = -1
+    fformat = 0
+    if len(fname):
+        
+        if os.path.isfile(fname):
+            file_text = open(fname, "r")
+            
+            file_line = file_text.readline()
+            separator = None
+            
+            
 
             if '\t' in file_line:
                 # tab separated
@@ -365,6 +367,7 @@ def read_tek_csv_files_2d(paths, subsample=1, header_columns = 3, skip_rows = 0,
     file_text = open(file, "r")
     row = 0
     a = True
+    b = True
     header = {}
     while a:
         file_line = file_text.readline()
@@ -376,10 +379,24 @@ def read_tek_csv_files_2d(paths, subsample=1, header_columns = 3, skip_rows = 0,
                 val.append(tokens[v+1].strip())
             header[tokens[0].strip('"')]=tuple(val)
        
+        
         else:
-            a = False
+            if not b:
+                a = False
+            else:
+                b = False
         
         row +=1
+
+        if len(tokens)>1:
+            if is_numeric(tokens[0]) and is_numeric(tokens[1]):
+                a = False # reached the values
+                row -=1
+        
+        
+        
+
+   
 
     file_text.close()
     nchans = int(header['Record Length'][0])
@@ -423,7 +440,10 @@ def read_tek_csv_files_2d(paths, subsample=1, header_columns = 3, skip_rows = 0,
                 for row in range(nchans-3):
                     line_str  = file_text.readline()
                     if not '#' in line_str:
-                        data[d][row]=float(line_str.split(',')[data_position])
+                        try:
+                            data[d][row]=float(line_str.split(',')[data_position])
+                        except:
+                            break
             else:
                 for row in range(nchans-3):
                     data[d][row]=float(file_text.readline().split(',')[data_position])

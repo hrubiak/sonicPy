@@ -279,8 +279,9 @@ class UltrasoundAnalysisController(QObject):
         self._update_view()
 
     def update_data_by_dict_silent(self, data):
-        t, spectrum, fname = data['t'], data['spectrum'], data['fname']
-        self._update_spectrum(t, spectrum, fname)
+        if len(data):
+            t, spectrum, fname = data['t'], data['spectrum'], data['fname']
+            self._update_spectrum(t, spectrum, fname)
         
     def _update_spectrum(self, t, spectrum, fname):
         

@@ -5,7 +5,7 @@ import os.path, shutil
 from utilities.utilities import *
 
 import numpy as np
-
+import re
 
 from um.models.tek_fileIO import *
 
@@ -47,10 +47,8 @@ class FileServer():
         output = []
         to_read_files = []
         for f in files:
-            if f in self.files:
-                pass
-                #waveforms.append(self.files[f])
-            else:
+            if not f in self.files:
+                
                 to_read_files.append(f)
     
         if len(to_read_files):
@@ -98,7 +96,7 @@ class OverViewModel():
 
         self.settings_fname = 'settings.json'
 
-        
+        self.pattern =  r'(\d+)MHz'
 
         self.echoes_p = {}
         self.echoes_s = {}
@@ -180,14 +178,14 @@ class OverViewModel():
 
     def load_multiple_files_by_frequency(self, freq):
         conditions = self.results_model.get_folders_sorted()  
-        fnames = []
-        for c in conditions:
+        fnames = ['']*len(conditions)
+        for i, c in enumerate(conditions):
             fname_list = self.fps_cond[c]
             if freq in fname_list:
                 fname = fname_list[freq]
             else:
                 fname = ''
-            fnames.append(fname)
+            fnames[i]=fname
         start_time = time.time()
         
         
@@ -233,6 +231,7 @@ class OverViewModel():
         for f in fname_dict:
             fnames.append(fname_dict[f])
         frequencies = list(self.fps_Hz.keys())
+        auto_freq = len(frequencies[0].split(','))>1
         if len(fnames):
             
             if not cond in self.spectra:
@@ -242,8 +241,11 @@ class OverViewModel():
                 for frequency in frequencies:
                     for i, loaded_fname in enumerate(read_files):
                      
-                        f = i
-                        f_num = f'{f:03d}' 
+                        if auto_freq:
+                            f_num = frequencies[i]
+                        else:
+                            f = i
+                            f_num = f'{f:03d}' 
 
                         if f_num == frequency:
                             loaded_files[frequency]= loaded_fname
@@ -381,47 +383,108 @@ class OverViewModel():
             self.fps_cond = {}
             self.file_dict = {}
             self.fps_Hz = {}
+            
             condition_0 = conditions_folders_sorted[0]
             freq_search = os.path.join(folder,condition_0,'*'+file_type)
             freqs = glob.glob(freq_search) 
             suffix_freq = freqs[0].split('_')[-1][-4:]
 
             freqs_sorted = self.frequencies_sorted
+
+            auto_freq = len(freqs_sorted[0].split(','))>1 # this means the MHz were specified in the filenames
+            if auto_freq:
+                # initialize the dict to make sure the frequencies are sorted nicely
+                for i, f in enumerate(freqs_sorted):
+                    
+                    self.fps_Hz[f] = []
             start_time = time.time()
             for p in conditions_folders_sorted:
                 
-                conditions_search = os.path.join(folder,p,'*'+suffix_freq)
-                res = natsorted(glob.glob(conditions_search)) [:len(freqs_sorted)]
-                res_norm = []
-                for r in res:
-                    res_norm.append(os.path.normpath(r))
-                res = res_norm
+                if auto_freq:
+                    conditions_search = os.path.join(folder,p,'*'+suffix_freq)
+                    res = glob.glob(conditions_search)
+                    r_list = {}
+                    for f in freqs_sorted:
+                        r_list[f]= ''
+                        freq = f.split(',')[1].strip()
+                        for r in res:
+                            if freq+"MHz" in r:
+                                r_list[f]= r
+                                break
 
-                r_list = {}
-                for i, r in enumerate(res):
-                    f_num = f'{i:03d}' 
-                    r_list[f_num]= r
-            
+                else:
+                    conditions_search = os.path.join(folder,p,'*'+suffix_freq)
+                    res = natsorted(glob.glob(conditions_search)) [:len(freqs_sorted)]
+                    res_norm = []
+                    for r in res:
+                        res_norm.append(os.path.normpath(r))
+                    res = res_norm
+
+                    r_list = {}
+                    for i, r in enumerate(res):
+                        f_num = f'{i:03d}' 
+                        r_list[f_num]= r
+                
                 self.fps_cond[p] = r_list
+
+
                 
                 for i, r in enumerate(res):
                     
-                    f_num = f'{i:03d}' 
-                    
-                    self.file_dict[r]=(p,f_num)
+                    if auto_freq:
+                        
+                        match = re.search(self.pattern, r, re.IGNORECASE)
+                        if match:
+                            freq = int(match.group(1))
+                            f_num = ''
+                            for f in freqs_sorted:
+                                freq_MHz = int(f.split(',')[1].strip())
+                                if freq == freq_MHz:
+                                    f_num = f
 
-                    if f_num in self.fps_Hz:
-                        p_list = self.fps_Hz[f_num]
+                            if len(f_num):
+                                self.file_dict[r]=(p,f_num)
+                                if f_num in self.fps_Hz:
+                                    p_list = self.fps_Hz[f_num]
+                                else:
+                                    p_list = []
+                                
+                                p_list.append(r)
+                                self.fps_Hz[f_num] = p_list
+
                     else:
-                        p_list = []
-                    
-                    p_list.append(r)
-                    self.fps_Hz[f_num] = p_list
+
+                        f_num = f'{i:03d}' 
+                        
+                        self.file_dict[r]=(p,f_num)
+
+                        if f_num in self.fps_Hz:
+                            p_list = self.fps_Hz[f_num]
+                        else:
+                            p_list = []
+                        
+                        p_list.append(r)
+                        self.fps_Hz[f_num] = p_list
         
         
         elif mode == 'boradband':
             
             pass
+
+    def extract_mhz_numbers(self, file_list):
+        mhz_numbers = []
+        pattern = self.pattern
+
+        for filename in file_list:
+            match = re.search(pattern, filename, re.IGNORECASE)
+            if match:
+                mhz_numbers.append(int(match.group(1)))
+
+        return mhz_numbers
+
+    def are_all_numbers_different(self, numbers):
+        unique_numbers = set(numbers)
+        return len(unique_numbers) == len(numbers)
 
     def get_frequencies_sorted(self):
         conditions_folders_sorted = self.results_model.get_folders_sorted()
@@ -439,12 +502,42 @@ class OverViewModel():
             files.append(file)
 
         files = natsorted(files)
+        MHz_list = self.extract_mhz_numbers(files)
+        MHz_in_filenames = self.are_all_numbers_different(MHz_list) and len(MHz_list)
 
-        freqs_base = []
-        for i, p in enumerate(files):
-            num = f'{i:03d}'
-            freqs_base.append(num)
-        freqs_sorted = natsorted(freqs_base)
+        all_MHz = []
+        MHz_in_all_folders = True
+        unique_MHz = []
+        if MHz_in_filenames:
+            for condition in conditions_folders_sorted:
+                freq_search = os.path.join(folder,condition,'*'+file_type)
+                freqs = glob.glob(freq_search) 
+                files = []
+                for freq in freqs:
+                    file = os.path.split(freq)[-1]
+                    files.append(file)
+
+                files = natsorted(files)
+                MHz_list = self.extract_mhz_numbers(files)
+                MHz_in_filenames = self.are_all_numbers_different(MHz_list) and len(MHz_list)
+                MHz_in_all_folders = MHz_in_all_folders and MHz_in_filenames
+                if MHz_in_filenames :
+                    for MHz_value in MHz_list:
+                        all_MHz.append(MHz_value)
+
+            unique_MHz = sorted(set(all_MHz))
+        if len(unique_MHz):
+            freqs_base = []
+            for i, p in enumerate(unique_MHz):
+                num = f'{i:03d}'+ ", "+ str(p)
+                freqs_base.append(num)
+            freqs_sorted = freqs_base
+        else:
+            freqs_base = []
+            for i, p in enumerate(files):
+                num = f'{i:03d}'
+                freqs_base.append(num)
+            freqs_sorted = natsorted(freqs_base)
         return freqs_sorted
 
     def get_file_types_in_folder(self, folder):

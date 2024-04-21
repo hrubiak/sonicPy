@@ -134,11 +134,15 @@ class OverViewController(QObject):
         self.freq_settings_changed_signal.emit({'f_start':f_start,'f_step':f_step, 'f_end':f_end, 'f_selected': display_freq})
 
     def freq_str_ind_to_val(self, str_ind):
-        f_start = self.widget.freq_start.value()
-        f_step = self.widget.freq_step.value()
+        tokens = str_ind.split(',')
+        if len(tokens) >1:
+            val_freq = int(tokens[1].strip())
+        else:
+            f_start = self.widget.freq_start.value()
+            f_step = self.widget.freq_step.value()
 
 
-        val_freq = f_start + int(str_ind) * f_step
+            val_freq = f_start + int(str_ind) * f_step
         return val_freq * 1e6
 
     def emit_cursor(self, pos):
@@ -230,7 +234,7 @@ class OverViewController(QObject):
         freq = data['freq']
         cond = data['cond']
 
-        freq_val = self.freq_str_ind_to_val(freq)
+        #freq_val = self.freq_str_ind_to_val(freq)
         
         
         if freq != current_frequency:
@@ -425,7 +429,7 @@ class OverViewController(QObject):
             echoes_p = self.model.results_model.echoes_p
             echoes_s = self.model.results_model.echoes_s
 
-            freq = self.freq_str_ind_to_val(self.freq)
+            freq = int(self.freq_str_ind_to_val(self.freq)*1e-6)
 
             for echo_p_name in echoes_p:
                 echoes = echoes_p[echo_p_name]
@@ -454,9 +458,12 @@ class OverViewController(QObject):
             self.widget.single_frequency_waterfall.clear_plot()
             
             self.update_plot_sigle_frequency(waterfall_waveform,selected, echoes_p, echoes_s)
-            f_start = self.widget.freq_start.value()
+
+            display_freq = int(self.freq_str_ind_to_val(self.freq)*1e-6)
+            '''f_start = self.widget.freq_start.value()
             f_step = self.widget.freq_step.value()
-            display_freq = f_start + int(self.freq) * f_step
+
+            display_freq = f_start + int(self.freq) * f_step'''
             self.widget.single_frequency_waterfall.set_name ( str(display_freq) + ' MHz')
             self.widget.single_frequency_waterfall.set_selected_name (selected_name_out)
 
