@@ -24,7 +24,7 @@ del get_versions
 print(__version__)
 
 if __version__ == "0+unknown":
-    __version__ = "0.6.1"
+    __version__ = "0.6.2"
 sonicpy_version = __version__[:5]
 
 
@@ -80,7 +80,7 @@ calibrants_path = os.path.join(resources_path, 'calibrants')
 icons_path = os.path.join(resources_path, 'icons')
 data_path = os.path.join(resources_path, 'data')
 style_path = os.path.join(resources_path, 'style')
-title = "SonicPy: Time-of-flight analysis. ver." + __version__ + "  © R. Hrubiak, 2022."
+title = "SonicPy: Time-of-flight analysis. ver." + __version__ + "  © R. Hrubiak, 2024."
 home_path = str(Path.home())
 
 

@@ -38,17 +38,13 @@ class MatrixSelectionWidget(QWidget):
                         antialias=True, pen=None, symbolBrush=(255,0,100), symbolPen=None, symbolSize = 7, clickable=True)
         self.maximums = pg.PlotDataItem([], [],
                         antialias=True, pen=None, symbolBrush=(0,100,255), symbolPen=None, symbolSize = 7, clickable=True)
-        self.max_line_plot = pg.PlotDataItem([], [], 
-                        antialias=True, pen=pg.mkPen(color=(255,255,255,150), width=2), connect="finite" )
-        self.result_plot = pg.PlotDataItem([], [], 
-                        antialias=True, pen=pg.mkPen(color=(255,255,255,150), width=2), connect="finite" )
+ 
         
         self.main_plot.sigPointsClicked.connect(self.point_clicked)
         self.maximums.sigPointsClicked.connect(self.point_clicked)
-      
-        self.plot_win.addItem(self.max_line_plot)
+   
         self.plot_win.addItem(self.main_plot)
-        self.plot_win.addItem(self.result_plot)
+    
         self.plot_win.addItem(self.maximums)
 
         
@@ -68,9 +64,6 @@ class MatrixSelectionWidget(QWidget):
         point = [pt[0].pos().x(),pt[0].pos().y()]
         self.point_clicked_signal.emit(point)
 
-    def update_max_line(self, xData, yData):
-        if xData is not None and yData is not None:
-            self.max_line_plot.setData(xData, yData)
 
     def update_view(self, xData, yData):
         
