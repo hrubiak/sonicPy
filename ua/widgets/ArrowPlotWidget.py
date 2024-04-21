@@ -35,9 +35,9 @@ class ArrowPlotWidget(QWidget):
     def create_plots(self):
         self.plot_win = self.win.fig.win
         self.main_plot = pg.PlotDataItem([], [],
-                        antialias=True, pen=None, symbolBrush=(255,0,100), symbolPen=None, symbolSize = 7)
+                        antialias=True, pen=None, symbolBrush=(255,0,100), symbolPen=None, symbolSize = 7, clickable=True)
         self.maximums = pg.PlotDataItem([], [],
-                        antialias=True, pen=None, symbolBrush=(0,100,255), symbolPen=None, symbolSize = 7)
+                        antialias=True, pen=None, symbolBrush=(0,100,255), symbolPen=None, symbolSize = 7, clickable=True)
         self.max_line_plot = pg.PlotDataItem([], [], 
                         antialias=True, pen=pg.mkPen(color=(255,255,255,150), width=2), connect="finite" )
         self.result_plot = pg.PlotDataItem([], [], 
@@ -45,6 +45,7 @@ class ArrowPlotWidget(QWidget):
         
         self.main_plot.sigPointsClicked.connect(self.point_clicked)
         self.maximums.sigPointsClicked.connect(self.point_clicked)
+      
         self.plot_win.addItem(self.max_line_plot)
         self.plot_win.addItem(self.main_plot)
         self.plot_win.addItem(self.result_plot)
@@ -63,6 +64,7 @@ class ArrowPlotWidget(QWidget):
         self.set_color((255,255,255,150), 2)
 
     def point_clicked(self, item, pt):
+        print('pt ' + str(pt))
         point = [pt[0].pos().x(),pt[0].pos().y()]
         self.point_clicked_signal.emit(point)
 
@@ -144,7 +146,9 @@ class ArrowPlotWidget(QWidget):
         buttons_widget_top.setLayout(_buttons_layout_top)
         _layout.addWidget(buttons_widget_top)
         params = "Arrow Plot", f'\N{GREEK SMALL LETTER TAU} (s)', 'Inverse frequency (1/Hz)'
-        self.win = SimpleDisplayWidget(params)
+        self.win = SimpleDisplayWidget(params, update_cursor_on= False)
+        self.win.update_diff_on = False
+        
 
         
         

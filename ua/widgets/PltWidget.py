@@ -240,9 +240,11 @@ class CustomViewBox(pg.ViewBox):
             y = mousePoint.y()
             self.cursorPoint=x
             self.cursorPoint_y = y
+            print(x)
+            print(y)
             self.plotMouseCursorSignal.emit(x)   
             self.cursor_y_signal.emit(y) 
-        ev.accept()
+        #ev.accept()
             
 
 class PltWidget(pg.PlotWidget):

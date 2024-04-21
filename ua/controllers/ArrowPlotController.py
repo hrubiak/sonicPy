@@ -56,7 +56,7 @@ class ArrowPlotController(QObject):
         self.arrow_plot_window.N_cbx.stateChanged.connect(self.update_plot)
         self.arrow_plot_window.point_clicked_signal.connect(self.point_clicked_callback)
         #self.arrow_plot_window.save_btn.clicked.connect(self.save_result)
-        self.arrow_plot_window.win.cursor_changed_singal.connect(self.cursor_changed_singal_callback)
+        #self.arrow_plot_window.win.fig.cursor.connect(self.cursor_changed_singal_callback)
         self.arrow_plot_window.del_btn.clicked.connect(self. del_btn_callback)
 
     def reset(self):
@@ -89,33 +89,44 @@ class ArrowPlotController(QObject):
         self.update_plot()
 
     def cursor_changed_singal_callback(self, *args):
-        
+        print(args)
         mode = self.model.results_model.get_mode()
         arrow_plot = self.model.get_arrow_plot(self.cond, self.wave_type)
         if arrow_plot != None:
             freqs = np.asarray(sorted(list(arrow_plot.optima.keys())))
             freq = 1/args[0]
+            self.move_freq_cursor_callback(freq)
+            
+            
+            
+    def move_freq_cursor_callback(self, inv_freq):
+        arrow_plot = self.model.get_arrow_plot(self.cond, self.wave_type)
+        freqs = np.asarray(sorted(list(arrow_plot.optima.keys())))
+        
+        if len(freqs):
+            freq = 1/inv_freq
+            #print('freq ' + str(freq))
+            
+            if freq <= np.amin(freqs): 
+                part_ind = 0
+            elif freq >= np.amax(freqs):
+                part_ind = len(freqs)-1
+            else:
+                part_ind = get_partial_index(freqs, freq)
+            #print('part_ind ' + str(part_ind))
+            ind = int(round(part_ind))
+            #print('ind ' + str(ind))
+            if ind < len(freqs):
+                freq_out = freqs[ind]
+                #print('freq_out ' + str(freq))
+                optima = arrow_plot.optima[freq]
 
-            
-            if len(freqs):
-                if freq <= np.amin(freqs): 
-                    part_ind = 0
-                elif freq >= np.amax(freqs):
-                    part_ind = len(freqs)-1
-                else:
-                    part_ind = get_partial_index(freqs, freq)
-                ind = int(round(part_ind))
-                if ind < len(freqs):
-                    freq_out = freqs[ind]
-                    optima = arrow_plot.optima[freq_out]
-                    fname = os.path.normpath(optima.filename_waveform)
-                    self.arrow_plot_freq_cursor_changed_signal.emit({'frequency':freq_out, 'filename_waveform':fname})
-                    
-                    freq_curosr = round(freq_out * 1e-6,1)
-                    
-                    self.set_frequency_cursor(freq_curosr)
-            
-            
+                fname = os.path.normpath(optima.filename_waveform)
+                self.arrow_plot_freq_cursor_changed_signal.emit({'frequency':freq, 'filename_waveform':fname})
+                
+                freq_curosr = round(freq * 1e-6,1)
+                
+                self.set_frequency_cursor(freq_curosr)
 
     def calc_callback(self):
         self.calculate_data()
@@ -140,9 +151,13 @@ class ArrowPlotController(QObject):
         if arrow_plot != None:
             f = pt[0]
             t = pt[1]
+            self.move_freq_cursor_callback(f)
             opt = self.get_opt()
             arrow_plot.set_optimum(opt, t,f)
             self.update_plot()
+
+            
+
             #self.calculate_data()
 
     def clear_data(self):

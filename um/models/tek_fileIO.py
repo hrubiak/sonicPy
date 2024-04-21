@@ -7,8 +7,8 @@ import numpy as np
 
 from numpy import format_float_scientific
 import time
-from PyQt5 import QtWidgets
 
+from PyQt5 import QtWidgets, QtCore
 
 def read_multiple_spectra(filenames, subsample = 1):
     spectra = []
@@ -45,6 +45,10 @@ def read_multiple_spectra_dict(filenames, subsample = 1 ):
 def read_2D_spectra_dict(filenames, subsample = 1 ):
 
     r = None
+    progress_dialog = QtWidgets.QProgressDialog("Loading data", "Abort", 0, len(filenames), None)
+    progress_dialog.setWindowModality(QtCore.Qt.WindowModal)
+    progress_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+    progress_dialog.show()
 
     fformat, fformat_name = get_file_format(filenames[0])
     #print(filenames[0])
@@ -52,16 +56,16 @@ def read_2D_spectra_dict(filenames, subsample = 1 ):
         r = read_tek_csv_files_2d(filenames, subsample=subsample)
        
     elif fformat == 2 :
-        r = read_ascii_scope_files_2d(filenames, subsample = subsample)
+        r = read_ascii_scope_files_2d(filenames, subsample = subsample, progress_dialog=progress_dialog)
     
     elif fformat == 4:
-        r = read_ascii_scope_files_2d(filenames,subsample=1, separator=',', skip_rows=1, nchans = 200000)
+        r = read_ascii_scope_files_2d(filenames,subsample=1, separator=',', skip_rows=1, nchans = 200000, progress_dialog=progress_dialog)
         
     elif fformat == 5:
         r = read_tek_csv_files_2d(filenames,subsample=1, header_columns=2,skip_rows=0,column_shift=0)
 
     elif fformat == 6:
-        r = read_ascii_scope_files_2d(filenames, subsample = 1, separator=',', nchans = 200000)    
+        r = read_ascii_scope_files_2d(filenames, subsample = 1, separator=',', nchans = 200000, progress_dialog=progress_dialog)    
     
     '''file  = os.path.split(filenames[0])[-1]
     if '.' in file:
@@ -80,6 +84,8 @@ def read_2D_spectra_dict(filenames, subsample = 1 ):
             spectra.append({ 'filename':f,'waveform':[r['time'], r['voltage'][d]]})
         
     #print(fformat)
+            
+    progress_dialog.close()
     return spectra
 
 def load_any_waveform_file(filename):
@@ -478,14 +484,22 @@ def read_ascii_scope_files_2d(paths, subsample=1, separator = '\t',skip_rows = 0
 
     '''
 
-    '''if 'progress_dialog' in kwargs:
+    r = {}
+    if not len(paths):
+        return r
+
+    if 'progress_dialog' in kwargs:
         progress_dialog = kwargs['progress_dialog']
     else:
-        progress_dialog = QtWidgets.QProgressDialog()'''
+        progress_dialog = QtWidgets.QProgressDialog("Loading data", "Abort", 0, len(paths), None)
+        progress_dialog.setWindowModality(QtCore.Qt.WindowModal)
+        progress_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        progress_dialog.show()
 
 
     nfiles = len (paths)   
 
+ 
     
     file = paths[0]
     header = {}
@@ -513,12 +527,12 @@ def read_ascii_scope_files_2d(paths, subsample=1, separator = '\t',skip_rows = 0
 
     x = np.array(range(nchans))*sample_period*subsample
     
-    #QtWidgets.QApplication.processEvents()
+    QtWidgets.QApplication.processEvents()
     for d, file in enumerate(paths):
-        '''if d % 2 == 0:
+        if d % 2 == 0:
             #update progress bar only every 10 files to save time
             progress_dialog.setValue(d)
-            QtWidgets.QApplication.processEvents()'''
+            QtWidgets.QApplication.processEvents()
         
         try:
             if len(file):
@@ -535,10 +549,13 @@ def read_ascii_scope_files_2d(paths, subsample=1, separator = '\t',skip_rows = 0
             pass
         
         
-        '''if progress_dialog.wasCanceled():
-            break'''
-    '''QtWidgets.QApplication.processEvents()'''
-    r = {}
+        if progress_dialog.wasCanceled():
+            break
+    QtWidgets.QApplication.processEvents()
+
+    if not 'progress_dialog' in kwargs:
+        progress_dialog.close()
+    
     r['files_loaded'] = files_loaded
     r['header'] = header
     r['voltage'] = data

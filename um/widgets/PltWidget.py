@@ -23,7 +23,7 @@ class SimpleDisplayWidget(QtWidgets.QWidget):
     cursor_changed_singal = QtCore.pyqtSignal(float)
     cursor_y_signal = QtCore.pyqtSignal(float)
     
-    def __init__(self, fig_params):
+    def __init__(self, fig_params, update_cursor_on = True):
         super().__init__()
         self.cursor_pos = 0.0
         self._layout = QtWidgets.QVBoxLayout(self)
@@ -52,6 +52,8 @@ class SimpleDisplayWidget(QtWidgets.QWidget):
         self.button_widget.setLayout(self._button_widget_layout)
         self._layout.addWidget(self.button_widget)
         self.setLayout(self._layout)
+        self.update_diff_on = True
+        self.update_cursor_on = update_cursor_on
         self.create_connections()
         
 
@@ -63,7 +65,8 @@ class SimpleDisplayWidget(QtWidgets.QWidget):
 
     def create_connections(self):
         self.fig.fast_cursor.connect(self.update_fast_cursor)
-        self.fig.cursor.connect(self.update_cursor)
+        if self.update_cursor_on:
+            self.fig.cursor.connect(self.update_cursor)
         self.fig.cursor_y_signal.connect(self.update_cursor_y)
    
 
@@ -77,23 +80,27 @@ class SimpleDisplayWidget(QtWidgets.QWidget):
         self.cursor_fast_lbl.setText(c)
         self.fig.set_fast_cursor(pos)
         self.fast_cursor_changed_singal.emit(pos)
-        self.update_diff()
+        if self.update_diff_on:
+            self.update_diff()
 
     def update_cursor(self, pos):
+        
         c = "<span style='color: #00CC00'>%0.3e</span>"  % (pos)
         
         self.cursor_lbl.setText(c)
         self.cursor_pos = pos
         self.fig.set_cursor(pos)
+        
+        if self.update_diff_on:
+            self.update_diff()
         self.cursor_changed_singal.emit(pos)
-        self.update_diff()
-    
     
 
     def update_cursor_y(self, pos):
-        '''c = "<span style='color: #00CC00'>%0.3e</span>"  % (pos)
-        self.cursor_lbl.setText(c)
-        self.fig.set_cursor(pos)'''
+        if self.update_cursor_on:
+            '''c = "<span style='color: #00CC00'>%0.3e</span>"  % (pos)
+            self.cursor_lbl.setText(c)
+            self.fig.set_cursor(pos)'''
         self.cursor_y_signal.emit(pos)
         
 
@@ -263,14 +270,19 @@ class CustomViewBox(pg.ViewBox):
             
         elif ev.button() == QtCore.Qt.LeftButton: 
             pos = ev.pos()  ## using signal proxy turns original arguments into a tuple
-            mousePoint = self.mapSceneToView(pos)
-            x = mousePoint.x()
-            y = mousePoint.y()
-            self.cursorPoint=x
-            self.cursorPoint_y = y
-            self.plotMouseCursorSignal.emit(x)   
-            self.cursor_y_signal.emit(y) 
-        ev.accept()
+            if pos[0] > 0 and pos[1] > 0:
+
+                #print('pos ' + str(pos))
+                mousePoint = self.mapToView(pos)
+                x = mousePoint.x()
+                y = mousePoint.y()
+                #print(x)
+                #print(y)
+                self.cursorPoint=x
+                self.cursorPoint_y = y
+                self.plotMouseCursorSignal.emit(x)   
+                self.cursor_y_signal.emit(y) 
+        #ev.accept()
 
     def wheelEvent(self, ev, axis=None):
 
