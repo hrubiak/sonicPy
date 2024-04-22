@@ -59,11 +59,16 @@ class WaterfallModel( ):
             # convert echo bounds seconds to index by looking up the horizontal axis
             waveform = self.waveforms[fnames[0]]
             x_values = waveform[0]
-            lb1 = int(get_partial_index(x_values,echoes_bounds[0][0]))
+
+
+
+            ind_multiplier = 1
+
+            lb1 = int(get_partial_index(x_values,echoes_bounds[0][0])/ind_multiplier)
             
-            rb1 = int(get_partial_index(x_values,echoes_bounds[0][1]))
-            lb2 = int(get_partial_index(x_values,echoes_bounds[1][0]))
-            rb2 = int(get_partial_index(x_values,echoes_bounds[1][1]))
+            rb1 = int(get_partial_index(x_values,echoes_bounds[0][1])/ind_multiplier)
+            lb2 = int(get_partial_index(x_values,echoes_bounds[1][0])/ind_multiplier)
+            rb2 = int(get_partial_index(x_values,echoes_bounds[1][1])/ind_multiplier)
             echoes_bounds_ind = [[lb1, rb1],[lb2, rb2]]
 
             if wave_type == 'P':
@@ -77,34 +82,36 @@ class WaterfallModel( ):
         for d, p in enumerate(params):
 
             
-            self. add_waveform(params[p])
+            self. add_waveform(p, params[p])
 
         
 
-    def add_one_waveform(self, param:dict):
+    def add_one_waveform(self, p:str, param:dict):
         # param is a dict {'filename': "./*.csv", 'waveform':[x1,x2, ..., yn], [y1, y2, ..., yn] }
-        fname = param['filename']
+        fname = p + '//' + param['filename']
         wform = param['waveform']
         x = wform[0]
         y = wform[1]
-        x_size = len(x)
-        if x_size>100:
-            bin_size = self.bin_size
-            if x_size>25000:
-                bin_size = self.bin_size *2
-            if x_size> 100000:
-                bin_size = self.bin_size * 10
+        if len(x):
+            
+            x_size = len(x)
+            if x_size>100:
+                bin_size = self.bin_size
+                if x_size>25000:
+                    bin_size = self.bin_size *2
+                if x_size> 100000:
+                    bin_size = self.bin_size * 10
 
-            x = x.reshape(-1, bin_size).mean(axis=1)
-     
-            y = y.reshape(-1, bin_size).mean(axis=1)
-        wform = [x,y]
+                x = x.reshape(-1, bin_size).mean(axis=1)
+        
+                y = y.reshape(-1, bin_size).mean(axis=1)
+            wform = [x,y]
 
-        self.waveforms[fname]=wform
+            self.waveforms[fname]=wform
 
 
-    def add_waveform(self, param):
-        self.add_one_waveform(param)
+    def add_waveform(self, p, param):
+        self.add_one_waveform(p,param)
         
 
     def set_scale(self, scale):
@@ -248,9 +255,14 @@ class WaterfallModel( ):
         echoe_s = [[],[]] 
         
         if len(selected_fname):
-            fnames = list(self.waveforms.keys())
-            if selected_fname in fnames:
-                limits = self.waveform_limits[ selected_fname ]
+            fnames_str = list(self.waveforms.keys())
+            fnames = []
+            for fname_str in fnames_str:
+                
+                if selected_fname == fname_str.split('//')[1]:
+                    
+                    limits = self.waveform_limits[ fname_str ]
+                    break
         waterfall_waveform = self.waterfall_out['waveform']
         echoe_p = self.waterfall_out['echoes_p']
         echoe_s = self.waterfall_out['echoes_s']

@@ -63,9 +63,11 @@ class WaterfallWidget(QtWidgets.QWidget):
     def plot(self, x,y,sel_x=[],sel_y=[],echoes_p_x=[],echoes_p_y=[],echoes_s_x=[],echoes_s_y=[], xLabel='Time', dataLabel=''):
         fig = self.plot_widget.fig.win 
         fig.plotData(x,y,sel_x,sel_y, echoes_p_x,echoes_p_y, echoes_s_x,echoes_s_y, xLabel, dataLabel)
+        
 
     def clear_plot(self,):
-        self.plot([],[])
+        self.plot(np.asarray([np.nan]),np.asarray([np.nan]))
+        
         self.set_selected_name('')
         self.set_name('')
 

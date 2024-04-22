@@ -131,11 +131,25 @@ class OverViewWidget(QWidget):
         self.setWindowTitle('Time-of-flight analysis')
 
         #self.resize(800, 800)
-        
+        self.f_settings_visible = False
         self.make_widget()
 
         self.freq_btns_list = []
         self.cond_btns_list = []
+        
+        
+
+    def f_settings_set_visible(self, state):
+        if state:
+            if not self.f_settings_visible:
+                self._buttons_layout_top.addWidget(self._f_settings_widget)
+                self._f_settings_widget.show()
+                self.f_settings_visible = True
+        else:
+            if self.f_settings_visible:
+                self._buttons_layout_top.removeWidget(self._f_settings_widget)
+                self._f_settings_widget.hide()
+                self.f_settings_visible = False
 
 
     def make_widget(self):
@@ -186,10 +200,15 @@ class OverViewWidget(QWidget):
         self.freq_step.setSingleStep(0.5)
         self.freq_step.setValue(2)
 
-        self._buttons_layout_top.addWidget(QtWidgets.QLabel('𝑓 start'))
-        self._buttons_layout_top.addWidget(self.freq_start)
-        self._buttons_layout_top.addWidget(QtWidgets.QLabel('𝑓 step'))
-        self._buttons_layout_top.addWidget(self.freq_step)
+        self._f_settings_widget = QtWidgets.QWidget()
+        self._f_settings_layout = QtWidgets.QHBoxLayout(self._f_settings_widget)
+        self._f_settings_layout.setContentsMargins(0,0,0,0)
+        self._f_settings_layout.addWidget(QtWidgets.QLabel('𝑓 start'))
+        self._f_settings_layout.addWidget(self.freq_start)
+        self._f_settings_layout.addWidget(QtWidgets.QLabel('𝑓 step'))
+        self._f_settings_layout.addWidget(self.freq_step)
+
+        #self.f_settings_set_visible(True)
 
         self.buttons_widget_top.setLayout(self._buttons_layout_top)
         self._layout.addWidget(self.buttons_widget_top)
@@ -229,6 +248,7 @@ class OverViewWidget(QWidget):
     def clear_widget(self):
         self.single_frequency_waterfall.clear_plot()
         self.single_condition_waterfall.clear_plot()
+        self.f_settings_set_visible(False)
 
     def make_bottom_combo_widgets(self):
         

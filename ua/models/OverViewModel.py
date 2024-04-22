@@ -69,7 +69,7 @@ class OverViewModel():
         self.results_model = results_model
 
         
-
+        self.auto_freq = False
 
         self.spectra = {}
 
@@ -216,11 +216,14 @@ class OverViewModel():
 
             self.waterfalls[freq].add_multiple_waveforms(self.spectra[freq])
         else:
+            pass
+            '''waterfall = self.waterfalls[freq]
+
             fnames = []
             for cond in self.spectra[freq]:
                 fnames.append(self.spectra[freq][cond]['filename'])
-            waterfall = self.waterfalls[freq]
-            waterfall.re_order_files(fnames)
+            
+            waterfall.re_order_files(fnames)'''
         
 
           
@@ -391,7 +394,7 @@ class OverViewModel():
 
             freqs_sorted = self.frequencies_sorted
 
-            auto_freq = len(freqs_sorted[0].split(','))>1 # this means the MHz were specified in the filenames
+            auto_freq = self.auto_freq # this means the MHz were specified in the filenames
             if auto_freq:
                 # initialize the dict to make sure the frequencies are sorted nicely
                 for i, f in enumerate(freqs_sorted):
@@ -467,7 +470,7 @@ class OverViewModel():
                         self.fps_Hz[f_num] = p_list
         
         
-        elif mode == 'boradband':
+        elif mode == 'broadband':
             
             pass
 
@@ -526,18 +529,23 @@ class OverViewModel():
                         all_MHz.append(MHz_value)
 
             unique_MHz = sorted(set(all_MHz))
+
+        self.auto_freq = len(unique_MHz)
+
         if len(unique_MHz):
             freqs_base = []
             for i, p in enumerate(unique_MHz):
                 num = f'{i:03d}'+ ", "+ str(p)
                 freqs_base.append(num)
             freqs_sorted = freqs_base
+            self.auto_freq = True
         else:
             freqs_base = []
             for i, p in enumerate(files):
                 num = f'{i:03d}'
                 freqs_base.append(num)
             freqs_sorted = natsorted(freqs_base)
+            self.auto_freq = False
         return freqs_sorted
 
     def get_file_types_in_folder(self, folder):

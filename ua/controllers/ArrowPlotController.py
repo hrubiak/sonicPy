@@ -119,12 +119,12 @@ class ArrowPlotController(QObject):
             if ind < len(freqs):
                 freq_out = freqs[ind]
                 #print('freq_out ' + str(freq))
-                optima = arrow_plot.optima[freq]
+                optima = arrow_plot.optima[freq_out]
 
                 fname = os.path.normpath(optima.filename_waveform)
-                self.arrow_plot_freq_cursor_changed_signal.emit({'frequency':freq, 'filename_waveform':fname})
+                self.arrow_plot_freq_cursor_changed_signal.emit({'frequency':freq_out, 'filename_waveform':fname})
                 
-                freq_curosr = round(freq * 1e-6,1)
+                freq_curosr = round(freq_out * 1e-6,1)
                 
                 self.set_frequency_cursor(freq_curosr)
 
