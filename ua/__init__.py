@@ -19,12 +19,12 @@ import traceback
 from um.widgets.UtilityWidgets import ErrorMessageBox
 import time
 
-__version__ = get_versions()['version']
+'''__version__ = get_versions()['version']
 del get_versions
-print(__version__)
+print(__version__)'''
 
-if __version__ == "0+unknown":
-    __version__ = "0.6.2"
+#if __version__ == "0+unknown":
+__version__ = "0.6.2"
 sonicpy_version = __version__[:5]
 
 
