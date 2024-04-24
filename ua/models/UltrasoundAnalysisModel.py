@@ -8,7 +8,8 @@ from utilities.HelperModule import move_window_relative_to_screen_center, get_pa
 import numpy as np
 
 
-from scipy.signal import argrelextrema, tukey
+from scipy.signal import argrelextrema
+from scipy.signal.windows import tukey
 
 from um.models.tek_fileIO import *
 
