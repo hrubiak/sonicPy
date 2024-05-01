@@ -18,6 +18,9 @@ class dataPoints():
         self.file_exists_matrix = [[]]
         self.file_selected_matrix = [[]]
         self.multiple_selection = multiple_selection
+    
+    def clear(self):
+        self.__init__(self.multiple_selection)
         
     def set_data_points(self, conditions, frequencies, file_dict):
 
@@ -60,7 +63,10 @@ class MatrixSelectionModel():
         self.plot_model = MatrixSelectionPlotModel()
 
     def clear(self):
-        self.__init__()
+        self.data_points.clear()
+
+        self.plot_model.clear()
+
 
     def set_data(self, fps_cond:dict, fps_Hz:dict, file_dict):
         
@@ -115,12 +121,12 @@ class MatrixSelectionPlotModel():
         return xData, yData
 
     def get_selected_data_point(self):
-        data_points = self.data_points
+        
         xData = []
         yData = []
-        frequencies = data_points.frequencies
-        conditions = data_points.conditions
-        selected_point = data_points.get_selected()
+        frequencies = self.data_points.frequencies
+        conditions = self.data_points.conditions
+        selected_point = self.data_points.get_selected()
 
         
         return xData, yData

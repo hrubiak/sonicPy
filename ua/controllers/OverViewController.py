@@ -243,6 +243,13 @@ class OverViewController(QObject):
             freq = data['freq']
             cond = data['cond']
 
+            # new matrix selection stuff
+            mode = self.model.settings['mode']
+            if mode == 'discrete_f':
+                self.model.matrix_model.data_points.set_selected(freq,cond)
+                selected = self.model.matrix_model.plot_model.get_selected_data_point()
+                print(selected)
+
             #freq_val = self.freq_str_ind_to_val(freq)
             
             
@@ -418,6 +425,7 @@ class OverViewController(QObject):
         if len(freqs) >index and len(freqs):
             self.freq = freqs[index]
             self.model.load_multiple_files_by_frequency(self.freq)
+            
             
             self.widget.freq_scroll.blockSignals(True)
             self.widget.freq_scroll.setValue(index)

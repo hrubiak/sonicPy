@@ -476,11 +476,12 @@ class OverViewModel():
                         p_list.append(r)
                         self.fps_Hz[f_num] = p_list
         
-        
+            self.matrix_model.clear()
+            self.matrix_model.set_data(self.fps_cond,self.fps_Hz, self.file_dict)
         elif mode == 'broadband':
             
             pass
-        print('create_file_dicts')
+        
 
     def extract_mhz_numbers(self, file_list):
         mhz_numbers = []
