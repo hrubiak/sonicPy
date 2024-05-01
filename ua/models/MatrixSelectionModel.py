@@ -13,40 +13,16 @@ import json, copy
 #from ua.models.OverViewModel import OverViewModel
 
 class dataPoints():
-    def __init__(self, conditions, frequencies, files):
-        
-        self.conditions = conditions
-        self.frequencies = frequencies
-        
-        self.init_data_points()
-        
-    def init_data_points(self):
-        
-        self.data_points={}
-        self.selected_point = {}
-        
-    def get_selected_(self):
-        return self.selected_point
-
-    def set_selected(self, freq, cond ):
-        pass
-
-class MatrixSelectionModel():
-    def __init__(self, ):
-        self.overview_model = None
-        self.data_points = None
+    def __init__(self):
         self.file_matrix = [[]]
         self.file_exists_matrix = [[]]
         self.file_selected_matrix = [[]]
-        self.plot_model = MatrixSelectionPlotModel()
-
-    def clear(self):
-        self.__init__()
-
-    def set_data(self, fps_cond:dict, fps_Hz:dict, file_dict):
         
-        conditions = list( fps_cond.keys())
-        frequencies = list( fps_Hz.keys())
+    def set_data_points(self, conditions, frequencies, file_dict):
+
+        self.conditions = conditions
+        self.frequencies = frequencies
+        self.file_dict = file_dict
         file_matrix = [['']*len(frequencies)]*len(conditions)
         file_exists_matrix = [[False]*len(frequencies)]*len(conditions)
         file_selected_matrix = copy.deepcopy(file_exists_matrix)
@@ -61,6 +37,28 @@ class MatrixSelectionModel():
         self.file_matrix = file_matrix
         self.file_exists_matrix = np.asarray(file_exists_matrix)
         self.file_selected_matrix = np.asarray(file_selected_matrix)
+        
+    def get_selected_(self):
+        return self.selected_point
+
+    def set_selected(self, freq, cond ):
+        pass
+
+class MatrixSelectionModel():
+    def __init__(self, ):
+        self.overview_model = None
+        self.data_points = dataPoints()
+       
+        self.plot_model = MatrixSelectionPlotModel()
+
+    def clear(self):
+        self.__init__()
+
+    def set_data(self, fps_cond:dict, fps_Hz:dict, file_dict):
+        
+        conditions = list( fps_cond.keys())
+        frequencies = list( fps_Hz.keys())
+        self.data_points.set_data_points(conditions,frequencies, file_dict)
         
 
         
