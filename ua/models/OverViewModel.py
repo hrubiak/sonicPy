@@ -60,7 +60,13 @@ class FileServer():
                 self.files[fname]=waveform
         
         for f in files:
-            output.append({'filename':f,'waveform':self.files[f]})
+            if len(f):
+                if f in self.files:
+                    output.append({'filename':f,'waveform':self.files[f]})
+                else:
+                    print('fname not in files')
+            else:
+                print('blank fname')
         return output
 
 class OverViewModel():

@@ -29,6 +29,8 @@ from utilities.HelperModule import increment_filename, increment_filename_extra
 from um.widgets.UtilityWidgets import open_file_dialog, open_files_dialog
 import glob
 from ua.models.EchoesResultsModel import EchoesResultsModel
+from ua.models.MatrixSelectionModel import MatrixSelectionModel
+
 
 ############################################################
 
@@ -41,9 +43,10 @@ class OverViewController(QObject):
     folders_sorted_signal = pyqtSignal(list)
     
 
-    def __init__(self, app = None, results_model=EchoesResultsModel()):
+    def __init__(self, app = None, results_model=EchoesResultsModel(), matrix_model = MatrixSelectionModel()):
         super().__init__()
-        self.model = OverViewModel(results_model)
+        self.model = OverViewModel(results_model, matrix_model)
+ 
 
         if app is not None:
             self.setStyle(app)

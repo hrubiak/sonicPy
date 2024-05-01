@@ -32,7 +32,7 @@ class dataPoints():
         pass
 
 class MatrixSelectionModel():
-    def __init__(self, overview_model: OverViewModel):
+    def __init__(self, ):
         self.overview_model = None
         self.data_points = None
         self.plot_model = MatrixSelectionPlotModel()
@@ -40,13 +40,9 @@ class MatrixSelectionModel():
     def clear(self):
         self.__init__()
 
-    def set_OverViewModel(self,  overview_model: OverViewModel):
-        self.overview_model = overview_model
-        conditions = overview_model.fps_cond
-        frequencies = overview_model.fps_Hz
-        files = overview_model.file_dict
-
-        self.data_points = dataPoints(conditions, frequencies, files)
+    def set_data(self):
+        
+        pass
         
     def get_arrow_plot(self, cond, wave_type):
         return 1
