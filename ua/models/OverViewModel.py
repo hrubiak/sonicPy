@@ -22,6 +22,7 @@ import time
 from natsort import natsorted 
 
 from ua.models.EchoesResultsModel import EchoesResultsModel
+from ua.models.MatrixSelectionModel import MatrixSelectionModel
  
 # Python program to sort a list of
 # tuples by the second Item using sort()
@@ -70,10 +71,10 @@ class FileServer():
         return output
 
 class OverViewModel():
-    def __init__(self, results_model: EchoesResultsModel):
+    def __init__(self, results_model: EchoesResultsModel, matrix_model:MatrixSelectionModel):
         
         self.results_model = results_model
-
+        self.matrix_model = matrix_model
         
         self.auto_freq = False
 
