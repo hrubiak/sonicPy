@@ -13,10 +13,11 @@ import json, copy
 #from ua.models.OverViewModel import OverViewModel
 
 class dataPoints():
-    def __init__(self):
-        self.file_matrix = [[]]
+    def __init__(self, multiple_selection = False):
+        self.file_matrix = [['']]
         self.file_exists_matrix = [[]]
         self.file_selected_matrix = [[]]
+        self.multiple_selection = multiple_selection
         
     def set_data_points(self, conditions, frequencies, file_dict):
 
@@ -39,14 +40,21 @@ class dataPoints():
         self.file_selected_matrix = np.asarray(file_selected_matrix)
         
     def get_selected_(self):
-        return self.selected_point
+        return self.file_selected_matrix==True
 
     def set_selected(self, freq, cond ):
-        pass
+        freq_ind = self.frequencies.index(freq)
+        cond_ind = self.conditions.index(cond)
+        file_exists = self.file_exists_matrix[cond_ind][freq_ind]
+        if file_exists:
+            if not self.multiple_selection:
+                self.file_selected_matrix[:][:]=False
+            self.file_selected_matrix[cond_ind][freq_ind]=True
+
 
 class MatrixSelectionModel():
-    def __init__(self, ):
-        self.overview_model = None
+    def __init__(self ):
+        
         self.data_points = dataPoints()
        
         self.plot_model = MatrixSelectionPlotModel()
