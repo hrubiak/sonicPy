@@ -155,7 +155,7 @@ class OverViewModel():
 
 
     def clear(self):
-        self.__init__(self.results_model)
+        self.__init__(self.results_model, self.matrix_model)
 
     def set_freq_start_step(self, f_start, f_step):
         self.settings['f_start']= f_start
@@ -480,6 +480,7 @@ class OverViewModel():
         elif mode == 'broadband':
             
             pass
+        print('create_file_dicts')
 
     def extract_mhz_numbers(self, file_list):
         mhz_numbers = []
@@ -635,6 +636,7 @@ class OverViewModel():
             self.create_file_dicts()
 
         if len(self.fps_cond) and len(self.fps_Hz) and len(self.file_dict):
+            self.matrix_model.set_data(self.fps_cond, self.fps_Hz, self.file_dict)
             set_okay = True
         else:
             set_okay = False

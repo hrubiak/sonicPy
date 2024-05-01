@@ -1,6 +1,6 @@
 
 
-from ua.models.OverViewModel import Sort_Tuple
+#from ua.models.OverViewModel import Sort_Tuple
 from utilities.utilities import *
 from utilities.HelperModule import move_window_relative_to_screen_center, get_partial_index, get_partial_value
 import numpy as np
@@ -10,7 +10,7 @@ from numpy import argmax, isin, nan, greater,less, append, sort, array, argmin
 from scipy.signal import argrelextrema
 
 import json, copy
-from ua.models.OverViewModel import OverViewModel
+#from ua.models.OverViewModel import OverViewModel
 
 class dataPoints():
     def __init__(self, conditions, frequencies, files):
@@ -35,14 +35,34 @@ class MatrixSelectionModel():
     def __init__(self, ):
         self.overview_model = None
         self.data_points = None
+        self.file_matrix = [[]]
+        self.file_exists_matrix = [[]]
+        self.file_selected_matrix = [[]]
         self.plot_model = MatrixSelectionPlotModel()
 
     def clear(self):
         self.__init__()
 
-    def set_data(self):
+    def set_data(self, fps_cond:dict, fps_Hz:dict, file_dict):
         
-        pass
+        conditions = list( fps_cond.keys())
+        frequencies = list( fps_Hz.keys())
+        file_matrix = [['']*len(frequencies)]*len(conditions)
+        file_exists_matrix = [[False]*len(frequencies)]*len(conditions)
+        file_selected_matrix = copy.deepcopy(file_exists_matrix)
+        for fname in file_dict:
+            cond = file_dict[fname][0]
+            freq = file_dict[fname][1]
+            file_matrix[conditions.index(cond)][frequencies.index(freq)] = fname
+            if len(fname):
+                if os.path.exists(fname):
+                    file_exists_matrix[conditions.index(cond)][frequencies.index(freq)]=True
+        
+        self.file_matrix = file_matrix
+        self.file_exists_matrix = np.asarray(file_exists_matrix)
+        self.file_selected_matrix = np.asarray(file_selected_matrix)
+        
+
         
     def get_arrow_plot(self, cond, wave_type):
         return 1
