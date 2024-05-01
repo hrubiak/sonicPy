@@ -39,7 +39,7 @@ class dataPoints():
         self.file_exists_matrix = np.asarray(file_exists_matrix)
         self.file_selected_matrix = np.asarray(file_selected_matrix)
         
-    def get_selected_(self):
+    def get_selected(self):
         return self.file_selected_matrix==True
 
     def set_selected(self, freq, cond ):
@@ -67,7 +67,8 @@ class MatrixSelectionModel():
         conditions = list( fps_cond.keys())
         frequencies = list( fps_Hz.keys())
         self.data_points.set_data_points(conditions,frequencies, file_dict)
-        
+        self.plot_model.clear()
+        self.plot_model.set_data_points(self.data_points)
 
         
     def get_arrow_plot(self, cond, wave_type):
@@ -104,26 +105,24 @@ class MatrixSelectionPlotModel():
     def delete_optima(self, cond, freq):
         del self.optima[freq]
 
-    def get_other_data_points(self, opt):
-        optima = self.optima
+    def get_other_data_points(self):
+        data_points = self.data_points
         xData = []
         yData = []
-        for freq in optima:
-            pt  = optima[freq].other_opt[opt]
-            for p in pt:
-                xData.append(1/freq)
-                yData.append(p)
+        frequencies = data_points.frequencies
+        conditions = data_points.conditions
+
         return xData, yData
 
-    def get_selected_data_point(self, opt, ind=0):
-        optima = self.optima
+    def get_selected_data_point(self):
+        data_points = self.data_points
         xData = []
         yData = []
-        for freq in optima:
-            pt  = optima[freq].get_optimum(opt,ind)
-            if pt is not None:
-                xData.append(1/freq)
-                yData.append(pt)
+        frequencies = data_points.frequencies
+        conditions = data_points.conditions
+        selected_point = data_points.get_selected()
+
+        
         return xData, yData
    
 def interleave_lists(a_list, b_list):
