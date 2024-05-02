@@ -232,38 +232,39 @@ class OverViewController(QObject):
         return conds
 
     def select_fname(self, fname, freq= -1.0):
-        temp_fname = copy.copy(self.selected_fname)
-        self.selected_fname = fname
-        data = self.get_data_by_filename(fname)
-        if len(data):
-            current_frequency = copy.copy(self.freq)
-            current_condition = copy.copy(self.cond)
-            
+        if fname != self.selected_fname:
+            temp_fname = copy.copy(self.selected_fname)
+            self.selected_fname = fname
+            data = self.get_data_by_filename(fname)
+            if len(data):
+                current_frequency = copy.copy(self.freq)
+                current_condition = copy.copy(self.cond)
+                
 
-            freq = data['freq']
-            cond = data['cond']
+                freq = data['freq']
+                cond = data['cond']
 
-            # new matrix selection stuff
-            mode = self.model.settings['mode']
-            if mode == 'discrete_f':
-                self.model.matrix_model.data_points.set_selected(freq,cond)
-                selected = self.model.matrix_model.plot_model.get_selected_data_point()
-                print(selected)
+                # new matrix selection stuff
+                mode = self.model.settings['mode']
+                if mode == 'discrete_f':
+                    self.model.matrix_model.data_points.set_selected(freq,cond)
+                    selected = self.model.matrix_model.plot_model.get_selected_data_point()
+                    print(selected)
 
-            #freq_val = self.freq_str_ind_to_val(freq)
-            
-            
-            if freq != current_frequency:
-                ind = list(self.model.fps_Hz.keys()).index(freq)
-                self.set_frequency(ind)
-            if cond != current_condition:
-                self.set_condition(cond)
-            
-            if temp_fname != self.selected_fname:
-                self.re_plot_single_frequency()
-                self.re_plot_single_condition()
-            self.file_selected_signal.emit(data)
-                    
+                #freq_val = self.freq_str_ind_to_val(freq)
+                
+                
+                if freq != current_frequency:
+                    ind = list(self.model.fps_Hz.keys()).index(freq)
+                    self.set_frequency(ind)
+                if cond != current_condition:
+                    self.set_condition(cond)
+                
+                if temp_fname != self.selected_fname:
+                    self.re_plot_single_frequency()
+                    self.re_plot_single_condition()
+                self.file_selected_signal.emit(data)
+                        
 
     def single_condition_cursor_y_signal_callback(self, y_pos):
         
