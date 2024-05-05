@@ -29,8 +29,12 @@ class WaterfallModel( ):
         fnames = list(self.waveforms.keys())
         new_waveforms = {}
         for fname in new_list:
-            if fname in fnames:
-                new_waveforms[fname] = self.waveforms[fname]
+            for fname_str in fnames:
+                
+                if fname == fname_str.split('//')[1]:
+                
+                    new_waveforms[fname_str] = self.waveforms[fname_str]
+                    break
         self.waveforms = new_waveforms
 
     def del_echoe(self, fname, wave_type):

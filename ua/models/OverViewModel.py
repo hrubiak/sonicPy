@@ -223,15 +223,14 @@ class OverViewModel():
 
             self.waterfalls[freq].add_multiple_waveforms(self.spectra[freq])
         else:
-            pass
-            '''waterfall = self.waterfalls[freq]
+            
+            waterfall = self.waterfalls[freq]
 
             fnames = []
             for cond in self.spectra[freq]:
                 fnames.append(self.spectra[freq][cond]['filename'])
             
-            waterfall.re_order_files(fnames)'''
-        
+            waterfall.re_order_files(fnames)        
 
           
     def load_multiple_files_by_condition(self, cond):

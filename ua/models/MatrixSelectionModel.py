@@ -43,7 +43,7 @@ class dataPoints():
         self.file_selected_matrix = np.asarray(file_selected_matrix)
         
     def get_selected(self):
-        return self.file_selected_matrix==True
+        return self.file_selected_matrix
 
     def set_selected(self, freq, cond ):
         freq_ind = self.frequencies.index(freq)
@@ -113,22 +113,39 @@ class MatrixSelectionPlotModel():
 
     def get_other_data_points(self):
         data_points = self.data_points
-        xData = []
-        yData = []
-        frequencies = data_points.frequencies
-        conditions = data_points.conditions
+        
+        frequencies = np.linspace(0,len(data_points.frequencies)-1,len(data_points.frequencies))
+        conditions = np.linspace(0,len(data_points.conditions)-1,len(data_points.conditions))
+        selected_point = self.data_points.get_selected()
+        exists_points = self.data_points.file_exists_matrix
+        other_points = np.ravel(exists_points *  (~selected_point))
 
+        # Create the first 2D array with frequencies values in all columns
+        frequencies_2d_array = np.ravel(np.tile(frequencies, (len(conditions), 1)))
+
+        # Create the second 2D array with conditions values in all rows
+        conditions_2d_array = np.ravel(np.tile(conditions, (len(frequencies), 1)).T)
+
+        xData = frequencies_2d_array[other_points]
+        yData = conditions_2d_array[other_points]
         return xData, yData
 
     def get_selected_data_point(self):
         
-        xData = []
-        yData = []
-        frequencies = self.data_points.frequencies
-        conditions = self.data_points.conditions
-        selected_point = self.data_points.get_selected()
-
+        data_points = self.data_points
         
+        frequencies = np.linspace(0,len(data_points.frequencies)-1,len(data_points.frequencies))
+        conditions = np.linspace(0,len(data_points.conditions)-1,len(data_points.conditions))
+        selected_point = np.ravel(self.data_points.get_selected())
+ 
+        # Create the first 2D array with frequencies values in all columns
+        frequencies_2d_array = np.ravel(np.tile(frequencies, (len(conditions), 1)))
+
+        # Create the second 2D array with conditions values in all rows
+        conditions_2d_array = np.ravel(np.tile(conditions, (len(frequencies), 1)).T)
+
+        xData = frequencies_2d_array[selected_point]
+        yData = conditions_2d_array[selected_point]
         return xData, yData
    
 def interleave_lists(a_list, b_list):

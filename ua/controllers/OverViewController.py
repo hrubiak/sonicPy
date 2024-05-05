@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-
-
-import imp
 import os.path, sys
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QObject, pyqtSignal
@@ -249,9 +246,10 @@ class OverViewController(QObject):
                 if mode == 'discrete_f':
                     self.model.matrix_model.data_points.set_selected(freq,cond)
                     selected = self.model.matrix_model.plot_model.get_selected_data_point()
+                    other = self.model.matrix_model.plot_model.get_other_data_points()
                     print(selected)
 
-                #freq_val = self.freq_str_ind_to_val(freq)
+                
                 
                 
                 if freq != current_frequency:

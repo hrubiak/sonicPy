@@ -1,4 +1,4 @@
-import imp
+
 import sys, os
 
 from PyQt5 import QtWidgets, QtCore, QtGui

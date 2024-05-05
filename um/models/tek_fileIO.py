@@ -1,5 +1,5 @@
 from fileinput import filename
-import imp, os, glob
+import os, glob
 import struct
 import csv
 #from pandas import read_csv

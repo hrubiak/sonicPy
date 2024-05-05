@@ -128,7 +128,7 @@ class OverViewWidget(QWidget):
         self.spectrum = None
 
 
-        self.setWindowTitle('Time-of-flight analysis')
+        #self.setWindowTitle('Time-of-flight analysis')
 
         #self.resize(800, 800)
         self.f_settings_visible = False

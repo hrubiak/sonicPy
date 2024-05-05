@@ -1,4 +1,3 @@
-import imp
 import os, os.path, sys, platform, copy
 from functools import partial
 from time import sleep
