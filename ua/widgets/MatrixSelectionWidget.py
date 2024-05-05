@@ -26,7 +26,7 @@ class MatrixSelectionWidget(QWidget):
         self.initialized = False
         self.t = None
         self.spectrum = None
-        self.setWindowTitle('Inverse frequency analysis')
+        self.setWindowTitle('Data point selection matrix')
   
         self.make_widget()
         self.create_plots()
@@ -52,7 +52,7 @@ class MatrixSelectionWidget(QWidget):
         # next lines are needed to create the legend items for the plot even though these plots are not the ones used
         # may change how this is done later
         
-        self.plot_win.create_plots([],[],[],[],'Inverse frequency (1/Hz)')
+        self.plot_win.create_plots([],[],[],[],'Frequency')
         self.plot_win.set_colors( { 
                         'data_color': '#eeeeee',\
                         'rois_color': (0,255,100), \
@@ -95,70 +95,19 @@ class MatrixSelectionWidget(QWidget):
         _layout = QtWidgets.QVBoxLayout(self)
         _layout.setContentsMargins(8, 5, 0, 0)
 
-        self.label = QtWidgets.QLabel("Inverse frequency plot")
+        self.label = QtWidgets.QLabel("Data point selection matrix")
         self.label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.label.setStyleSheet('''font-size: 18pt;''')
         _layout.addWidget(self.label)
-
-        detail_widget = QtWidgets.QWidget()
-        _detail_layout = QtWidgets.QHBoxLayout()
-        _detail_layout.setContentsMargins(0, 0, 0, 0)
-        buttons_widget_top = QtWidgets.QWidget()
-        _buttons_layout_top = QtWidgets.QHBoxLayout()
-        _buttons_layout_top.setContentsMargins(0, 0, 0, 0)
-        buttons_widget_bottom = QtWidgets.QWidget()
-        _buttons_layout_bottom = QtWidgets.QHBoxLayout()
-        _buttons_layout_bottom.setContentsMargins(0, 0, 0, 0)
-        self.open_btn = QtWidgets.QPushButton("Open")
-        self.auto_btn = QtWidgets.QPushButton("Auto")
-        self.calc_btn = QtWidgets.QPushButton("Calculate")
-        self.del_btn = QtWidgets.QPushButton('Delete')
-        self.clear_btn = QtWidgets.QPushButton('Clear')
-        self.fname_lbl = QtWidgets.QLineEdit('')
-        freq_lbl = QtWidgets.QLabel('   Inverse Frequency (1/MHz):')
-        self.freq_ebx = QtWidgets.QDoubleSpinBox()
-        self.freq_ebx.setMaximum(100)
-        self.freq_ebx.setMinimum(1)
-        self.freq_ebx.setValue(21)
-        self.N_cbx = QtWidgets.QCheckBox('+/-')
-        self.N_cbx.setChecked(True)
-        self.save_btn = QtWidgets.QPushButton('Save result')
-
-        
-        #_buttons_layout_top.addWidget(self.open_btn)
-        #_buttons_layout_top.addWidget(self.N_cbx)
-        _buttons_layout_top.addWidget(self.calc_btn)
-        _buttons_layout_top.addWidget(self.auto_btn)
-        _buttons_layout_top.addSpacerItem(HorizontalSpacerItem())
-        _buttons_layout_top.addWidget(self.del_btn)
-        _buttons_layout_top.addWidget(self.clear_btn)
-        
-        _buttons_layout_top.addSpacerItem(HorizontalSpacerItem())
-        #_buttons_layout_top.addWidget(self.save_btn)
-
-        buttons_widget_top.setLayout(_buttons_layout_top)
-        _layout.addWidget(buttons_widget_top)
-        params = "Arrow Plot", f'\N{GREEK SMALL LETTER TAU} (s)', 'Inverse frequency (1/Hz)'
+   
+        params = "Arrow Plot", f'Condition', f'Frequency'
         self.win = SimpleDisplayWidget(params, update_cursor_on= False)
         self.win.update_diff_on = False
         
-
-        
-        
         _layout.addWidget(self.win)
 
-
-       
-        detail_widget.setLayout(_detail_layout)
-        _layout.addWidget(detail_widget)
-        
-        self.output_condition_lbl =QtWidgets.QLabel('')
-        _buttons_layout_bottom.addWidget(self.output_condition_lbl)
         self.output_ebx = QtWidgets.QLineEdit('')
-        #_buttons_layout_bottom.addWidget(self.output_ebx)
-        #_buttons_layout_bottom.addSpacerItem(HorizontalSpacerItem())
-        buttons_widget_bottom.setLayout(_buttons_layout_bottom)
-        #_layout.addWidget(buttons_widget_bottom)
+
         my_widget.setLayout(_layout)
         
 

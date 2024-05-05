@@ -247,9 +247,9 @@ class OverViewController(QObject):
                     self.model.matrix_model.data_points.set_selected(freq,cond)
                     selected = self.model.matrix_model.plot_model.get_selected_data_point()
                     other = self.model.matrix_model.plot_model.get_other_data_points()
-                    print(selected)
-
-                
+                    #print(selected)
+                    self.widget.matrix_selection_widget.update_view(*other)
+                    self.widget.matrix_selection_widget.update_maximums(*selected)
                 
                 
                 if freq != current_frequency:
