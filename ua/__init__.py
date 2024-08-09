@@ -24,7 +24,7 @@ del get_versions
 print(__version__)'''
 
 #if __version__ == "0+unknown":
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 sonicpy_version = __version__[:5]
 
 
