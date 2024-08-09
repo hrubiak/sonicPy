@@ -106,9 +106,10 @@ class WaterfallModel( ):
                 if x_size> 100000:
                     bin_size = self.bin_size * 10
 
-                x = x.reshape(-1, bin_size).mean(axis=1)
+                new_len = (x.shape[0] // bin_size ) * bin_size
+                x = x[:new_len].reshape(-1, bin_size).mean(axis=1)
         
-                y = y.reshape(-1, bin_size).mean(axis=1)
+                y = y[:new_len].reshape(-1, bin_size).mean(axis=1)
             wform = [x,y]
 
             self.waveforms[fname]=wform
