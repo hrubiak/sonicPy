@@ -6,6 +6,7 @@ import os
 from distutils.sysconfig import get_python_lib
 import sys
 
+sys.path.append('.')
 import scipy
 
 
@@ -59,7 +60,7 @@ else:
     platform += "32"
 
 
-excl = ['matplotlib', 'PySide','PyQt4','pyeqt']
+excl = ['matplotlib', 'PySide','PyQt4','pyeqt', 'PyQt6']
 
 
 print('start Analysis')
